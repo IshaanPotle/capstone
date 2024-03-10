@@ -31,13 +31,16 @@ def test_results_html():
     return Response(generate_with_cohere(keyword), content_type='text/event-stream')
 
 def generate_with_cohere(keyword):
-    for event in co.chat(f"Explain {keyword} in 500 words in easy to understand language", stream=True):
+    for event in co.chat(f"Generate only 10 MCQ questions based on the given passage and Mark Answers and convert to a JSON format {{'Question': '{{Actual Question}}', 'Answer' : '{{Actual Answer}}', 'Distractor': [\'Option1\', \'Option2\',\'Option3\', \'Option4\']}} :{keyword} ", stream=True):
         if event.event_type == cohere.responses.chat.StreamEvent.TEXT_GENERATION:
             generated_text = f"{event.text}"  # Wrap each line in a <p> tag for better formatting
             yield generated_text
     
         elif event.event_type == cohere.responses.chat.StreamEvent.STREAM_END:
             yield f""
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

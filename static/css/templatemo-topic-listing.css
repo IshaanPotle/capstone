@@ -1,5 +1,4 @@
 :root {
- 
   --white-color:                  #ffffff;
   --primary-color:                #13547a;
   --secondary-color:              #80d0c7;
@@ -9,9 +8,7 @@
   --dark-color:                   #000000;
   --p-color:                      #717275;
   --border-color:                 #7fffd4;
-  --link-hover-color:             #13547a; 
-
-  
+  --link-hover-color:             #13547a;
 
   --body-font-family:             'Open Sans', sans-serif;
   --title-font-family:            'Montserrat', sans-serif;
@@ -139,8 +136,7 @@ strong {
 }
 
 .section-overlay {
-  /*background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);*/
-  background-image: linear-gradient(15deg, #161418 0%, #161418 100%);
+  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
   position: absolute;
   top: 0;
   left: 0;
@@ -241,9 +237,7 @@ strong {
   SITE HEADER              
 -----------------------------------------*/
 .site-header {
-  /*background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);*/
-  background-image: linear-gradient(15deg, #161418 0%, #161418 100%);
-
+  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
   padding-top: 150px;
   padding-bottom: 80px;
 }
@@ -481,9 +475,7 @@ strong {
   HERO        
 -----------------------------------------*/
 .hero-section {
-  /*background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);*/
-  background-image: linear-gradient(15deg, #161418 0%, #161418 100%);
-
+  background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
   position: relative;
   overflow: hidden;
   padding-top: 150px;
@@ -1150,36 +1142,3 @@ blockquote {
   }
 }
 
-.card-content {
-    overflow: hidden;
-    position: relative;
-}
-
-.card-content:hover .extra-info {
-    transform: translateY(0);
-}
-
-.extra-info {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-}
-
-.card-body {
-    position: relative;
-}
-
-.card-title {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.9); /* Optional: Set background color for better visibility */
-    padding: 5px 10px; /* Optional: Adjust padding as needed */
-    margin-bottom: 0; /* Optional: Remove margin */
-}
