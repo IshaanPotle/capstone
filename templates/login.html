@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <h2>Login</h2>
+    <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        // Dummy user data
+        const users = [
+            { username: 'user1', password: 'password1' },
+            { username: 'user2', password: 'password2' },
+            { username: 'user3', password: 'password3' },
+            { username: 'user4', password: 'password4' },
+            { username: 'user5', password: 'password5' }
+        ];
+
+        // Handle form submission
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get form values
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Find user by username and password
+            const user = users.find(user => user.username === username && user.password === password);
+            if (!user) {
+                alert('Invalid username or password. Please try again.');
+                return;
+            }
+
+            // Alert user that login was successful
+            alert('Login successful! You will now be redirected to the homepage.');
+
+            // Redirect user to the homepage (index.html)
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
