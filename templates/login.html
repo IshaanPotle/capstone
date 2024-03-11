@@ -1,52 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/fav.png') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='css/images/fav.jpg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap1.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
 </head>
-<body>
-    <h2>Login</h2>
-    <form id="login-form">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <button type="submit">Login</button>
-    </form>
-
-    <script>
-        // Dummy user data
-        const users = [
-            { username: 'user1', password: 'password1' },
-            { username: 'user2', password: 'password2' },
-            { username: 'user3', password: 'password3' },
-            { username: 'user4', password: 'password4' },
-            { username: 'user5', password: 'password5' }
-        ];
-
-        // Handle form submission
-        document.getElementById('login-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Get form values
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Find user by username and password
-            const user = users.find(user => user.username === username && user.password === password);
-            if (!user) {
-                alert('Invalid username or password. Please try again.');
-                return;
-            }
-
-            // Alert user that login was successful
-            alert('Login successful! You will now be redirected to the homepage.');
-
-            // Redirect user to the homepage (index.html)
-            window.location.href = 'index.html';
-        });
-    </script>
+<body class="bg-white">
+    <div class="container-fluid vh-100">
+        <div class="row vh-100">
+            <div class="col-lg-6 bg-gray p-5 text-center">
+                <h4 class="text-center fw-bolder fs-2">New Here? </h4>
+                <p class="mb-3 fs-7">Register Now and Feel the New Digital World</p>
+                <a href="{{ url_for('register') }}">
+                    <button class="btn fw-bold mb-5 btn-outline-success px-4 rounded-pill">Sign Up</button>
+                </a>
+                <div class="img-cover p-4">
+                    <img src="{{ url_for('static', filename='images/loginbg.svg') }}" alt="">
+                </div>
+            </div>
+            <div class="col-lg-6 p vh-100">
+                <div class="row d-flex vh-100">
+                    <div class="col-md-8 p-4 ikigui m-auto text-center align-items-center">
+                        <h4 class="text-center fw-bolder mb-4 fs-2">Login</h4>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-4">
+                            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        
+                        <button class="btn btn-lg fw-bold fs-7 btn-success  w-100">Login</button>
+                        
+                        <p class="text-center py-4 fw-bold fs-8">Or Sign in with social platforms</p>
+                        
+                        <ul class="d-inline-block mx-auto">
+                            <li class="float-start px-3"><a href=""><i class="bi bi-facebook"></i></a></li>
+                            <li class="float-start px-3"><a href=""><i class="bi bi-twitter"></i></a></li>
+                            <li class="float-start px-3"><a href=""><i class="bi bi-linkedin"></i></a></li>
+                            <li class="float-start px-3"><a href=""><i class="bi bi-google"></i></a></li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

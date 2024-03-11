@@ -22,24 +22,30 @@ def contact():
     return render_template('contact.html')
 
 @app.route('/test')
-def test_html():
+def test():
     return render_template('test.html')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
 @app.route('/generate', methods=['POST'])
-def test_results_html():
+def generate():
     keyword = request.form['keyword']
     return Response(generate_with_cohere(keyword), content_type='text/event-stream')
 
 def generate_with_cohere(keyword):
-    for event in co.chat(f"Generate only 10 MCQ questions based on the given passage and Mark Answers and convert to a JSON format {{'Question': '{{Actual Question}}', 'Answer' : '{{Actual Answer}}', 'Distractor': [\'Option1\', \'Option2\',\'Option3\', \'Option4\']}} :{keyword} ", stream=True):
+    for event in co.chat(f"Explain {keyword} to me ", stream=True):
         if event.event_type == cohere.responses.chat.StreamEvent.TEXT_GENERATION:
             generated_text = f"{event.text}"  # Wrap each line in a <p> tag for better formatting
             yield generated_text
     
         elif event.event_type == cohere.responses.chat.StreamEvent.STREAM_END:
             yield f""
-
-
 
 
 if __name__ == '__main__':
