@@ -85,13 +85,14 @@
             </nav>
             
 
+
             <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8 col-12 mx-auto">
                             <h1 class="text-white text-center">Discover. Learn. Enjoy</h1>
-                            <h6 class="text-center">Platform for WHO REALLY WANT TO LEARN</h6>
-                            <form method="post" action="/generate" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
+                            <h6 class="text-center">Platform for those who really want to learn</h6>
+                            <form id="generate-form" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
                                 <div class="input-group input-group-lg">
                                     <span class="input-group-text bi-search" id="basic-addon1"></span>
                                     <input name="keyword" type="search" class="form-control" id="keyword" placeholder="Search anything ..." aria-label="Search">
@@ -99,72 +100,77 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </section>
-
-
+            
             <section class="featured-section">
-                <div class="container">
-                    <div class="row justify-content-center">
-
-                        <div class="col-lg-4 col-12 mb-4 mb-lg-0">
-                            <div class="custom-block bg-white shadow-lg">
-                                <a href="topics-detail.html">
-                                    <div class="d-flex">
-                                        <div>
-                                            <h5 class="mb-2">Web</h5>
-
-                                            <p class="mb-0">When you search for free CSS templates, you will notice that TemplateMo is one of the best websites.</p>
-                                        </div>
-
-                                        <span class="badge bg-design rounded-pill ms-auto">14</span>
-                                    </div>
-
-                                    <img src="images/topics/undraw_Remote_design_team_re_urdx.png" class="custom-block-image img-fluid" alt="">
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-6 col-12">
-                            <div class="custom-block custom-block-overlay">
-                                <div class="d-flex flex-column h-100">
-                                    <img src="images/businesswoman-using-tablet-analysis.jpg" class="custom-block-image img-fluid" alt="">
-
-                                    <div class="custom-block-overlay-text d-flex">
-                                        <div>
-                                            <h5 class="text-white mb-2">Finance</h5>
-
-                                            <p class="text-white">Topic Listing Template includes homepage, listing page, detail page, and contact page. You can feel free to edit and adapt for your CMS requirements.</p>
-
-                                            <a href="topics-detail.html" class="btn custom-btn mt-2 mt-lg-3">Learn More</a>
-                                        </div>
-
-                                        <span class="badge bg-finance rounded-pill ms-auto">25</span>
-                                    </div>
-
-                                    <div class="social-share d-flex">
-                                        <p class="text-white me-4">Share:</p>
-
-                                        <ul class="social-icon">
-                                            <li class="social-icon-item">
-                                                <a href="#" class="social-icon-link bi-twitter"></a>
-                                            </li>
-
-                                            <li class="social-icon-item">
-                                                <a href="#" class="social-icon-link bi-facebook"></a>
-                                            </li>
-                                    </div>
-
-                                    <div class="section-overlay"></div>
-                                </div>
-                            </div>
-                        </div>
-
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-12 mb-4 mb-lg-0">
+                <div class="custom-block bg-white shadow-lg" id="card1">
+                    <div class="skeleton-animation">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
+                    <div class="text-container">
+                        <h5 class="mb-2 skeleton-text">Recommend    ation: Text</h5>
+                        <p class="mb-0 skeleton-text">When you search for free CSS templates, you will notice that TemplateMo is one of the best websites.</p>
                     </div>
                 </div>
-            </section>
+            </div>
+        </div>
+    </div>
+</section>
+
+            
+            
+            
+        
+        
+        
+
+<!-- JavaScript -->
+<script>
+document.getElementById("generate-form").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Prevent default form submission behavior
+
+    const keyword = document.getElementById("keyword").value;
+
+    try {
+        // Get the card and text container elements
+        const card = document.getElementById("card1");
+        const skeletonAnimation = card.querySelector(".skeleton-animation");
+        const textContainer = card.querySelector(".text-container");
+
+        // Display skeleton animation
+        skeletonAnimation.style.display = "block";
+
+        // Make API request
+        const response = await fetch("/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `keyword=${encodeURIComponent(keyword)}`
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to fetch data");
+        }
+
+        // Display the response in the card with text animation
+        const data = await response.text();
+        textContainer.innerHTML = data;
+        textContainer.classList.add("loaded");
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+
+</script>
 
 
             <section class="explore-section section-padding" id="section_2">

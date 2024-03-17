@@ -512,6 +512,43 @@ strong {
 /*---------------------------------------
   TOPICS              
 -----------------------------------------*/
+
+/* TESTING */
+
+/* Skeleton animation */
+.skeleton-animation {
+  display: none;
+}
+.custom-block.loading .skeleton-animation {
+  display: block;
+}
+
+/* Content transition */
+.text-container {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+.custom-block:not(.loading) .text-container {
+  opacity: 1;
+}
+
+
+
+.question {
+  font-weight: bold;
+  color: blue;
+}
+
+.answer {
+  font-style: italic;
+  color: green;
+}
+
+.distractor {
+  color: red;
+}
+
+/* ---------------- */
 .featured-section {
   background-color: var(--secondary-color);
   border-radius: 0 0 100px 100px;
