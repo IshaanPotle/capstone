@@ -84,8 +84,7 @@
                 </div>
             </nav>
             
-
-            <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+    <!--  <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-8 col-12 mx-auto">
@@ -102,10 +101,8 @@
 
                     </div>
                 </div>
-            </section>
-
-
-            <section class="featured-section">
+            </section>-->
+           <!-- <section class="featured-section">
                 <div class="container">
                     <div class="row justify-content-center">
 
@@ -125,8 +122,156 @@
                                     <img src="{{ url_for('static', filename = 'images/topics/undraw_Remote_design_team_re_urdx.png')}}" class="custom-block-image img-fluid" alt="">
                                 </a>
                             </div>
-                        </div>
-
+                        </div> -->
+                        
+                        <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 col-12 mx-auto">
+                                        <h1 class="text-white text-center">Discover. Learn. Enjoy</h1>
+                                        <h6 class="text-center">Platform for those who really want to learn</h6>
+                                        <form id="generate-form" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
+                                            <div class="input-group input-group-lg">
+                                                <span class="input-group-text bi-search" id="basic-addon1"></span>
+                                                <input name="keyword" type="search" class="form-control" id="keyword" placeholder="Search anything ..." aria-label="Search">
+                                                <button type="submit" id="submit-btn" class="btn btn-primary">Search</button>
+                                            </div>
+                                        </form>
+                                        <!-- Button row -->
+                                        <div class="row mt-3">
+                                            <div class="col text-center">
+                                                <button type="submit" id="submit-btn" class="btn btn-secondary">Faraday's Law</button>
+                                                <button type="button" class="btn btn-secondary">Pythagoras Thereom</button>
+                                                <button type="button" class="btn btn-secondary">Cold War</button>
+                                                <button type="button" class="btn btn-secondary">Immune System</button>
+                                                <!-- Add more buttons as needed -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-12 mx-auto">
+                                        <div class="custom-block bg-white shadow-lg" id="card1" style="display: none;">
+                                            <div class="skeleton-animation">
+                                                <div class="skeleton-line"></div>
+                                            </div>
+                                            <div class="text-container" style="display: none;"></div>
+                                            <!-- Loader -->
+                                            <div id="loader" class="lds-ellipsis" style="display: none;"><div></div><div></div><div></div><div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        
+                        <!-- Add your CSS styles -->
+                        <style>
+                            .custom-block {
+                                height: auto; /* Adjust height as needed */
+                                padding: 20px; /* Adjust padding as needed */
+                                position: relative; /* Ensure relative positioning for loader */
+                            }
+                        
+                            .lds-ellipsis {
+                                position: absolute;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                            }
+                        </style>
+                        
+                        <script>
+                            document.getElementById("generate-form").addEventListener("submit", async function(event) {
+                                event.preventDefault(); // Prevent default form submission behavior
+                        
+                                const keyword = document.getElementById("keyword").value;
+                        
+                                try {
+                                    // Show loader while content is being generated
+                                    document.getElementById("loader").style.display = "block";
+                        
+                                    // Make API request
+                                    const response = await fetch("/generate", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/x-www-form-urlencoded"
+                                        },
+                                        body: `keyword=${encodeURIComponent(keyword)}`
+                                    });
+                        
+                                    if (!response.ok) {
+                                        throw new Error("Failed to fetch data");
+                                    }
+                        
+                                    // Hide loader once content is loaded
+                                    document.getElementById("loader").style.display = "none";
+                        
+                                    // Retrieve the card and text container elements
+                                    const card = document.getElementById("card1");
+                                    const skeletonAnimation = card.querySelector(".skeleton-animation");
+                                    const textContainer = card.querySelector(".text-container");
+                        
+                                    // Display the card and text container
+                                    card.style.display = "block";
+                                    textContainer.style.display = "block";
+                        
+                                    // Display the response in the card with text animation
+                                    const data = await response.text();
+                                    textContainer.innerHTML = data;
+                                    textContainer.classList.add("loaded");
+                                } catch (error) {
+                                    console.error("Error:", error);
+                                }
+                            });
+                        
+                            // Add event listeners to the buttons in the button row
+                            const buttonRow = document.getElementById("button-row");
+                            buttonRow.addEventListener("click", async function(event) {
+                                if (event.target.tagName === "BUTTON") {
+                                    const keyword = event.target.textContent;
+                        
+                                    try {
+                                        // Show loader while content is being generated
+                                        document.getElementById("loader").style.display = "block";
+                        
+                                        // Make API request
+                                        const response = await fetch("/generate", {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type": "application/x-www-form-urlencoded"
+                                            },
+                                            body: `keyword=${encodeURIComponent(keyword)}`
+                                        });
+                        
+                                        if (!response.ok) {
+                                            throw new Error("Failed to fetch data");
+                                        }
+                        
+                                        // Hide loader once content is loaded
+                                        document.getElementById("loader").style.display = "none";
+                        
+                                        // Retrieve the card and text container elements
+                                        const card = document.getElementById("card1");
+                                        const skeletonAnimation = card.querySelector(".skeleton-animation");
+                                        const textContainer = card.querySelector(".text-container");
+                        
+                                        // Display the card and text container
+                                        card.style.display = "block";
+                                        textContainer.style.display = "block";
+                        
+                                        // Display the response in the card with text animation
+                                        const data = await response.text();
+                                        textContainer.innerHTML = data;
+                                        textContainer.classList.add("loaded");
+                                    } catch (error) {
+                                        console.error("Error:", error);
+                                    }
+                                }
+                            });
+                        </script>
+                        
+                        
+                        
+         
                         <div class="col-lg-6 col-12">
                             <div class="custom-block custom-block-overlay">
                                 <div class="d-flex flex-column h-100">

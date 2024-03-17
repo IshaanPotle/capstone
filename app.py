@@ -7,19 +7,19 @@ co = cohere.Client('WrwwKEMSMjFySzaPxE9NmECZ6gjs4cINUtioGtNF')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.php')
 
 @app.route('/topics_listing')
 def topics_listing():
-    return render_template('topics_listing.html')
+    return render_template('topics_listing.php')
 
 @app.route('/topics-detail')
 def topics_detail():
-    return render_template('topics-detail.html')
+    return render_template('topics-detail.php')
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    return render_template('contact.php')
 
 @app.route('/test')
 def test():
@@ -27,11 +27,11 @@ def test():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    return render_template('login.php')
 
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.php')
 
 @app.route('/generate', methods=['POST'])
 def generate():
