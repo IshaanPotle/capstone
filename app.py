@@ -80,9 +80,36 @@ def login():
         return render_template('login.php')
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.php')
+    message = None
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Determine the role based on the email suffix
+        if email.endswith('@nmims.edu'):
+            role = 'Teacher'
+        else:
+            role = 'Student'
+
+        # Insert the new user into the database
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        try:
+            cursor.execute('INSERT INTO auth (email, password, role) VALUES (%s, %s, %s)', (email, password, role))
+            conn.commit()
+            message = 'User registered successfully'
+        except mysql.connector.Error as e:
+            message = f'Error: {e}'
+        finally:
+            conn.close()
+
+        # Redirect to the login page upon successful registration
+        return redirect(url_for('login'))
+
+    return render_template('register.php', message=message)
+
 
 @app.route('/conn')
 def conn():

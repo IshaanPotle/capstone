@@ -24,42 +24,37 @@
                 </div>
                 <div class="col-lg-6 p  vh-100">
                    <div class="row d-flex vh-100">
-                       <div class="col-md-8 p-4 ikigui m-auto text-center align-items-center">
-                           <h4 class="text-center fw-bolder mb-4 fs-2">Login</h4>
-                            <div class="input-group mb-4">
-                              <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-person"></i></span>
-                              <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Full Name" aria-label="Username" aria-describedby="basic-addon1">
-                           </div>
-                           <div class="input-group mb-4">
-                              <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-envelope"></i></span>
-                              <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Email Address" aria-label="Username" aria-describedby="basic-addon1">
-                           </div>
-                           <div class="input-group mb-4">
-                              <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
-                              <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1">
-                           </div>
-                             <div class="input-group mb-4">
-                              <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
-                              <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Confirm Password" aria-label="Username" aria-describedby="basic-addon1">
-                           </div>
-                           
-                           <button class="btn btn-lg fw-bold fs-7 btn-success  w-100">Register</button>
-                           
+                   <form method="POST" action="/register">
+    <div class="col-md-8 p-4 ikigui m-auto text-center align-items-center">
+        <h4 class="text-center fw-bolder mb-4 fs-2">Signup</h4>
+        <div class="input-group mb-4">
+            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-envelope"></i></span>
+            <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Email Address" aria-label="Email" aria-describedby="basic-addon1" name="email">
+        </div>
+        <div class="input-group mb-4">
+            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
+            <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Enter Password" aria-label="Password" aria-describedby="basic-addon1" name="password">
+        </div>
+        <button type="submit" class="btn btn-lg fw-bold fs-7 btn-success w-100">Register</button>
+    </div>
+</form>
+
+
                            <p class="text-center py-4 fw-bold fs-8">Or Sign in with social platforms</p>
-                           
+
                            <ul class="d-inline-block mx-auto">
                                <li class="float-start px-3"><a href=""><i class="bi bi-facebook"></i></a></li>
                                <li class="float-start px-3"><a href=""><i class="bi bi-twitter"></i></a></li>
                                <li class="float-start px-3"><a href=""><i class="bi bi-linkedin"></i></a></li>
                                <li class="float-start px-3"><a href=""><i class="bi bi-google"></i></a></li>
-                               
+
                            </ul>
                        </div>
                    </div>
-                    
+
                 </div>
             </div>
-        </div>  
+        </div>
     </body>
     <script src="{{ url_for('static', filename='js/jquery1-3.2.1.min.js')}}"></script>
 <script src="{{ url_for('static', filename='js/popper.min.js')}}"></script>
