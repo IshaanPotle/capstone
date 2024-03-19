@@ -9,7 +9,7 @@ co = cohere.Client('WrwwKEMSMjFySzaPxE9NmECZ6gjs4cINUtioGtNF')
 # MySQL configuration
 db_config = {
     'host': 'localhost',     # Change this to your MySQL server address
-    'user': 'localhost',      # Change this to your MySQL username
+    'user': 'root',      # Change this to your MySQL username
     'password': '',  # Change this to your MySQL password
     'database': 'capstone'  # Change this to the name of your MySQL database
 }
@@ -31,22 +31,22 @@ def index():
         # User is authenticated, get the email from session
         email = session['email']
         # Pass the email to the template
-        return render_template('index.php', email=email)
+        return render_template('index.html', email=email)
     else:
         # User is not authenticated, redirect to login page
-        return redirect(url_for('login.php'))
+        return redirect(url_for('login.html'))
 
 @app.route('/topics_listing')
 def topics_listing():
-    return render_template('topics_listing.php')
+    return render_template('topics_listing.html')
 
 @app.route('/topics-detail')
 def topics_detail():
-    return render_template('topics-detail.php')
+    return render_template('topics-detail.html')
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.php')
+    return render_template('contact.html')
 
 @app.route('/test')
 def test():
@@ -75,9 +75,9 @@ def login():
             # Invalid credentials, show error message
             error = "Invalid email or password. Please try again."
             print("Invalid email or password")  # Add print statement for debugging
-            return render_template('login.php', error=error)
+            return render_template('login.html', error=error)
     else:
-        return render_template('login.php')
+        return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -108,12 +108,8 @@ def register():
         # Redirect to the login page upon successful registration
         return redirect(url_for('login'))
 
-    return render_template('register.php', message=message)
+    return render_template('register.html', message=message)
 
-
-@app.route('/conn')
-def conn():
-    return render_template('conn.php')
 
 @app.route('/generate', methods=['POST'])
 def generate():
