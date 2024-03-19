@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects</title>
+    <!-- CSS FILES -->        
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+        }
+        .container {
+            padding: 0; /* Remove padding for the container */
+        }
+        .text-container {
+            max-width: 100%; /* Allow the text container to take full width */
+            padding: 20px; /* Add some padding for spacing */
+            box-sizing: border-box; /* Include padding in width calculation */
+        }
+        .text-content {
+            font-size: 16px; /* Set a base font size */
+            line-height: 1.6;
+            border: 1px solid #ccc; /* Add a border for separation */
+            border-radius: 5px; /* Add rounded corners for aesthetic appeal */
+            background-color: #f9f9f9; /* Add a light background color */
+            padding: 20px; /* Add padding for better readability */
+            margin-bottom: 20px; /* Add margin at the bottom */
+        }
+        .text-content p {
+            margin-bottom: 10px; /* Adjust paragraph margin for better spacing */
+        }
+        a {
+            display: block; /* Make the link a block element for better spacing */
+            margin-top: 10px; /* Add margin to separate link from content */
+        }
+        .custom-navbar-bg {
+            background-color: #80d0c7; /* Set background color to #80d0c7 */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg custom-navbar-bg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi-back"></i>
+                <span>Learn</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4">
+                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                
+            </div>
+        </div>
+    </nav>
+    
+    <div class="text-container">
+        <div class="text-content">
+            {% if textual_content %}
+                {{ textual_content | safe}}
+            {% else %}
+                <p>No textual content found for this subject.</p>
+            {% endif %}
+        </div>
+        <a href="/">Back to Home</a> <!-- Adjust the URL if needed -->
+    </div>
+</body>
+</html>

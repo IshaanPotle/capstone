@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects</title>
+    <!-- CSS FILES -->        
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+    
+    <style>
+        body { font-family: 'Arial', sans-serif; }
+        .textbook-page { background-color: #fff; padding: 20px; }
+        .textbook-page h2 { color: #006699; }
+        .textbook-page p { margin-bottom: 15px; text-align: justify; }
+        img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+        figure { border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9; margin-bottom: 20px; padding: 10px; }
+        figcaption { font-style: italic; padding: 10px; text-align: center; color: #666; }
+        .custom-navbar-bg {
+            background-color: #80d0c7; /* Set background color to #80d0c7 */
+        }
+        .btn-article, .btn-video {
+            width: 100%; /* Make buttons fill entire width */
+            margin-bottom: 10px; /* Add some space between buttons */
+        }
+        .btn-article, .btn-video {
+            background-color: #80d0c7; /* Set button background color */
+            border-color: #80d0c7; /* Set button border color */
+            color: #fff; /* Set button text color */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg custom-navbar-bg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi-back"></i>
+                <span>Learn</span>
+            </a>
+
+            <div class="d-lg-none ms-auto me-4">
+                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container" style="padding-top: 20px;">
+        <ul class="list-unstyled row">
+            {% if subtopics %}
+                {% for subtopic in subtopics %}
+                    <li class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ subtopic.Subtopics }}</h5>
+                                <form action="/textualcontent" method="POST">
+                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                    <button type="submit" class="btn btn-primary btn-article">Article</button>
+                                </form>
+                                <form action="/videocontent" method="POST">
+                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                    <button type="submit" class="btn btn-primary btn-video">Video</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>No subtopics found</li>
+            {% endif %}
+        </ul>
+    </div>
+    <footer class="site-footer section-padding">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-12 mb-4 pb-2">
+                    <a class="navbar-brand mb-2" href="/">
+                        <i class="bi-back"></i>
+                        <span>Topic</span>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-6">
+                    <h6 class="site-footer-title mb-3">Resources</h6>
+
+                    <ul class="site-footer-links">
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Home</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">How it works</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">FAQs</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                    <h6 class="site-footer-title mb-3">Information</h6>
+
+                    <p class="text-white d-flex mb-1">
+                        <a href="tel: 305-240-9671" class="site-footer-link">
+                            305-240-9671
+                        </a>
+                    </p>
+
+                    <p class="text-white d-flex">
+                        <a href="mailto:info@company.com" class="site-footer-link">
+                            info@company.com
+                        </a>
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        English</button>
+
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button">Thai</button></li>
+
+                            <li><button class="dropdown-item" type="button">Myanmar</button></li>
+
+                            <li><button class="dropdown-item" type="button">Arabic</button></li>
+                        </ul>
+                    </div>
+
+                    <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
+                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
+                    
+                </div>
+
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

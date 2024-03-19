@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <html>
+        <head>
+        <title>Subjects</title>
+        <!-- CSS FILES -->        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+        
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+        
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0; /* Remove default margin */
+                padding: 0; /* Remove default padding */
+            }
+            .container {
+                padding: 0; /* Remove padding for the container */
+            }
+            .iframe-container {
+                position: relative;
+                width: 100%;
+                padding-bottom: 56.25%; /* 16:9 Aspect Ratio (adjust as needed) */
+                height: 0; /* Set initial height to 0 */
+                overflow: hidden; /* Hide overflow content */
+            }
+            .iframe-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%; /* Set iframe width to 100% */
+                height: 100%; /* Set iframe height to 100% */
+                border: none; /* Remove iframe border */
+            }
+            .iframe-container p {
+                font-size: 16px; /* Adjust font size for the "No content found" message */
+                color: #333; /* Set text color */
+                text-align: center; /* Center align the message */
+                margin-top: 20px; /* Add margin to separate message from iframe */
+            }
+            .text-content p {
+                margin-bottom: 10px; /* Adjust paragraph margin for better spacing */
+            }
+            a {
+                display: block; /* Make the link a block element for better spacing */
+                margin-top: 10px; /* Add margin to separate link from content */
+            }
+            .custom-navbar-bg {
+                background-color: #80d0c7; /* Set background color to #80d0c7 */
+            }
+            
+        </style>
+        </head>
+<body>
+    <body>
+        <nav class="navbar navbar-expand-lg custom-navbar-bg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <i class="bi-back"></i>
+                    <span>Learn</span>
+                </a>
+        
+                <div class="d-lg-none ms-auto me-4">
+                    <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+                </div>
+        
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    
+                    
+                </div>
+            </div>
+        </nav>
+<body>
+    <div class="iframe-container">
+        {% if iframe_url %}
+            <iframe src="{{ iframe_url }}" frameborder="0" allowfullscreen></iframe>
+        {% else %}
+            <p>No content found for this subject.</p>
+        {% endif %}
+    </div>
+    <a href="/">Back to Home</a> <!-- Adjust the URL if needed -->
+</body>
+</html>
