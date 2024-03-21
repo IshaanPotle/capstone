@@ -40,10 +40,12 @@
         }
         .card-title {
             font-size: 20px; /* Increase font size */
-            margin-bottom: 10px; /* Add margin at the bottom of title */
+            margin-top: 30px;
         }
         .btn-primary {
-            width: 100%; /* Make button full width */
+            width: 100%;
+             /* Make button full width */
+             margin-top: 30px;
         }
         .custom-navbar-bg {
             background-color: #80d0c7; /* Set background color to #80d0c7 */
@@ -51,7 +53,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar-bg">
+    <nav class="navbar navbar-expand-lg custom-navbar-bg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi-back"></i>
@@ -73,15 +75,17 @@
     </nav>
     
     <div class="container">
+        <h3 class="text-center">Subjects</h3>
+        <br>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for subject in subjects %}
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card" style="background-image: url('https://img.freepik.com/premium-vector/collection-colored-thin-icon-learning-subject-book-graduated-hat-learning-education-concept-vector-illustration_168824-141.jpg'); background-size: cover;">
+                    <div class="card-body text-center"> <!-- Center text -->
                         <h5 class="card-title">{{ subject.Subject }}</h5>
                         <form action="/chapters" method="POST">
                             <input type="hidden" name="Chapter" value="{{ subject.Subject }}">
-                            <button type="submit" class="btn btn-primary">View Chapters</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #80d0c7;">View Chapters</button> <!-- Change button color -->
                         </form>
                     </div>
                 </div>
@@ -89,6 +93,8 @@
             {% endfor %}
         </div>
     </div>
+    
+    
 
     <footer class="site-footer section-padding">
         <div class="container">

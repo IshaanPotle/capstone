@@ -31,6 +31,7 @@
             border: none; /* Remove border */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
             transition: box-shadow 0.3s ease; /* Add transition for hover effect */
+            height: 200px;
         }
         .card:hover {
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Change shadow on hover */
@@ -40,10 +41,11 @@
         }
         .card-title {
             font-size: 20px; /* Increase font size */
-            margin-bottom: 10px; /* Add margin at the bottom of title */
+            margin-top: 30px;
         }
         .btn-primary {
             width: 100%; /* Make button full width */
+            margin-top: 30px;
         }
         .navbar {
             background-color: #80d0c7; /* Set background color of navbar */
@@ -51,7 +53,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi-back"></i>
@@ -73,15 +75,17 @@
     </nav>
     
     <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <h3 class="text-center">Chapters</h3>
+        <br>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" >
             {% for chapter in chapters %}
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card" style="background-image: url('https://img.freepik.com/premium-vector/collection-colored-thin-icon-learning-subject-book-graduated-hat-learning-education-concept-vector-illustration_168824-141.jpg'); background-size: cover;">
+                    <div class="card-body text-center">
                         <h5 class="card-title">{{ chapter.Chapter }}</h5>
                         <form action="/subtopics" method="POST">
                             <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
-                            <button type="submit" class="btn btn-primary">View Subtopics</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #80d0c7;">View Subtopics</button>
                         </form>
                     </div>
                 </div>

@@ -24,11 +24,11 @@
         }
         .text-container {
             max-width: 100%; /* Allow the text container to take full width */
-            padding: 20px; /* Add some padding for spacing */
+            padding: 50px; /* Add some padding for spacing */
             box-sizing: border-box; /* Include padding in width calculation */
         }
         .text-content {
-            font-size: 16px; /* Set a base font size */
+            font-size: 14px; /* Adjust the base font size */
             line-height: 1.6;
             border: 1px solid #ccc; /* Add a border for separation */
             border-radius: 5px; /* Add rounded corners for aesthetic appeal */
@@ -37,19 +37,39 @@
             margin-bottom: 20px; /* Add margin at the bottom */
         }
         .text-content p {
-            margin-bottom: 10px; /* Adjust paragraph margin for better spacing */
+            margin-bottom: 10px;
+            font-size: 13px; /* Adjust paragraph margin for better spacing */
         }
         a {
             display: block; /* Make the link a block element for better spacing */
             margin-top: 10px; /* Add margin to separate link from content */
         }
         .custom-navbar-bg {
-            background-color: #80d0c7; /* Set background color to #80d0c7 */
+            background-color: #79c9c2; /* Set background color to #80d0c7 */
+        }
+
+        /* Override styles for dynamically generated heading */
+        .text-content h1 {
+            font-size: 24px; /* Adjust the font size for h1 */
+            color: #333; /* Change the color for h1 */
+            margin-bottom: 50px;
+        }
+        .text-content h2 {
+            font-size: 20px; /* Adjust the font size for h1 */
+            color: #333; /* Change the color for h1 */
+        }
+        .text-content h3 {
+            font-size: 16px; /* Adjust the font size for h1 */
+            color: #333; /* Change the color for h1 */
+        }
+        .text-content h4 {
+            font-size: 10px; /* Adjust the font size for h1 */
+            color: #333; /* Change the color for h1 */
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar-bg">
+    <nav class="navbar navbar-expand-lg custom-navbar-bg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="bi-back"></i>
@@ -78,7 +98,77 @@
                 <p>No textual content found for this subject.</p>
             {% endif %}
         </div>
-        <a href="/">Back to Home</a> <!-- Adjust the URL if needed -->
     </div>
+    <footer class="site-footer section-padding">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3 col-12 mb-4 pb-2">
+                    <a class="navbar-brand mb-2" href="/">
+                        <i class="bi-back"></i>
+                        <span>Topic</span>
+                    </a>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-6">
+                    <h6 class="site-footer-title mb-3">Resources</h6>
+
+                    <ul class="site-footer-links">
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Home</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">How it works</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">FAQs</a>
+                        </li>
+
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                    <h6 class="site-footer-title mb-3">Information</h6>
+
+                    <p class="text-white d-flex mb-1">
+                        <a href="tel: 305-240-9671" class="site-footer-link">
+                            305-240-9671
+                        </a>
+                    </p>
+
+                    <p class="text-white d-flex">
+                        <a href="mailto:info@company.com" class="site-footer-link">
+                            info@company.com
+                        </a>
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        English</button>
+
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button">Thai</button></li>
+
+                            <li><button class="dropdown-item" type="button">Myanmar</button></li>
+
+                            <li><button class="dropdown-item" type="button">Arabic</button></li>
+                        </ul>
+                    </div>
+
+                    <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
+                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
+                    
+                </div>
+
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
