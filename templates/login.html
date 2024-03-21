@@ -10,6 +10,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap1.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
+    <style>
+        body {
+            overflow: hidden;
+        }
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body class="bg-white">
     <div class="container-fluid vh-100">
@@ -25,33 +35,36 @@
                 </div>
             </div>
             <div class="col-lg-6 p vh-100">
-
-            <div class="row d-flex vh-100">
-            <form method="POST">
-            <div class="col-md-8 p-4 ikigui m-auto text-center align-items-center">
-                        <h4 class="text-center fw-bolder mb-4 fs-2">Login</h4>
-                        <div class="input-group mb-4">
-                            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-person"></i></span>
-                            <input type="text" id="email" name="email" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Email" aria-label="Username" aria-describedby="basic-addon1">
+                <div class="row d-flex vh-100">
+                    <form method="POST">
+                        <div class="container-fluid vh-100 d-flex justify-content-center align-items-center">
+                            <div class="col-md-8 p-4 ikigui text-center">
+                                <h4 class="text-center fw-bolder mb-4 fs-2">Login</h4>                            
+                                <div class="input-group mb-4">
+                                    <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-person"></i></span>
+                                    <input type="text" id="email" name="email" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" placeholder="Enter Email" aria-label="Username" aria-describedby="basic-addon1" required>
+                                </div>
+                                <div class="input-group mb-4">
+                                    <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
+                                    <input type="password" id="password" name="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1" required>
+                                </div>
+                                {% if error %}
+                                    <div class="error-message">{{ error }}</div>
+                                {% endif %}
+                                <button class="btn btn-lg fw-bold fs-7 btn-success  w-100">Login</button>
+                        
+                                <p class="text-center py-4 fw-bold fs-8">Or Sign in with social platforms</p>
+                        
+                                <ul class="d-inline-block mx-auto">
+                                    <li class="float-start px-3"><a href=""><i class="bi bi-facebook"></i></a></li>
+                                    <li class="float-start px-3"><a href=""><i class="bi bi-twitter"></i></a></li>
+                                    <li class="float-start px-3"><a href=""><i class="bi bi-linkedin"></i></a></li>
+                                    <li class="float-start px-3"><a href=""><i class="bi bi-google"></i></a></li>
+                                </ul>
+                            </div>
                         </div>
-                        <div class="input-group mb-4">
-                            <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
-                            <input type="password" id="password" name="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1">
-                        </div>
-
-                        <button class="btn btn-lg fw-bold fs-7 btn-success  w-100">Login</button>
-
-                        <p class="text-center py-4 fw-bold fs-8">Or Sign in with social platforms</p>
-
-                        <ul class="d-inline-block mx-auto">
-                            <li class="float-start px-3"><a href=""><i class="bi bi-facebook"></i></a></li>
-                            <li class="float-start px-3"><a href=""><i class="bi bi-twitter"></i></a></li>
-                            <li class="float-start px-3"><a href=""><i class="bi bi-linkedin"></i></a></li>
-                            <li class="float-start px-3"><a href=""><i class="bi bi-google"></i></a></li>
-
-                        </ul>
-                    </div>
-            </form>
+                        
+                    </form>
                 </div>
             </div>
         </div>
