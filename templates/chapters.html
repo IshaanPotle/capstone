@@ -19,13 +19,11 @@
             margin: 0;
             padding: 0;
         }
-        .navbar {
-            margin-bottom: 20px; /* Add margin at the bottom of navbar */
-        }
-        .container {
-            padding: 20px;
-            margin-top: 20px; /* Add margin at the top of the container */
-        }
+        /*  */
+        a {display: inline-block;
+    color: #13547a;
+    text-decoration: none;
+}
         .card {
             border-radius: 10px; /* Add rounded corners */
             border: none; /* Remove border */
@@ -47,36 +45,31 @@
             width: 100%; /* Make button full width */
             margin-top: 30px;
         }
-        .navbar {
-            background-color: #80d0c7; /* Set background color of navbar */
-        }
+      
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
+    {% include 'navbar.html'%}
+    <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi-back"></i>
-                <span>Learn</span>
-            </a>
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="subjects.html"></a>'CHapter Name'</li> <!--FIX LATER-->
 
-            <div class="d-lg-none ms-auto me-4">
-                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-            </div>
+                            <li class="breadcrumb-item active" aria-current="page">View Chapter</li>
+                        </ol>
+                    </nav>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                    <h2 class="text-white">Chapters</h2>
+                </div>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                
             </div>
         </div>
-    </nav>
-    
-    <div class="container">
-        <h3 class="text-center">Chapters</h3>
-        <br>
+    </section>
+ 
+        
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" >
             {% for chapter in chapters %}
             <div class="col">
@@ -93,6 +86,7 @@
             {% endfor %}
         </div>
     </div>
+
 
     <footer class="site-footer section-padding">
         <div class="container">

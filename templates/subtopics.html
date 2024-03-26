@@ -33,33 +33,35 @@
             border-color: #80d0c7; /* Set button border color */
             color: #fff; /* Set button text color */
         }
+       
+    a {display: inline-block;
+    color: #13547a;
+    text-decoration: none;
+}
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar-bg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
+
+    
+    {% include 'navbar.html'%}
+    <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi-back"></i>
-                <span>Learn</span>
-            </a>
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
 
-            <div class="d-lg-none ms-auto me-4">
-                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-            </div>
+                            <li class="breadcrumb-item active" aria-current="page">View Subject</li>
+                        </ol>
+                    </nav>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                    <h2 class="text-white">Subjects Listing</h2>
+                </div>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                
             </div>
         </div>
-    </nav>
-    
-    <div class="container" style="padding-top: 20px;">
-        <h3 class="text-center">Chapters</h3>
-        <br>
+    </section>
         <ul class="list-unstyled row">
             {% if subtopics %}
                 {% for subtopic in subtopics %}

@@ -19,13 +19,8 @@
             margin: 0;
             padding: 0;
         }
-        .navbar {
-            margin-bottom: 20px; /* Add margin at the bottom of navbar */
-        }
-        .container {
-            padding: 20px; /* Add padding around the container */
-        }
-        .card {
+      
+        .card {            
             border-radius: 10px; /* Add rounded corners */
             border: none; /* Remove border */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
@@ -47,35 +42,40 @@
              /* Make button full width */
              margin-top: 30px;
         }
-        .custom-navbar-bg {
+        /* .custom-navbar-bg {
             background-color: #80d0c7; /* Set background color to #80d0c7 */
+        .hero-section{
+            background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 150px;
+            padding-bottom: 150px;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg custom-navbar-bg" style="background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);">
+{% include 'navbar.html'%}
+
+    <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
         <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="bi-back"></i>
-                <span>Learn</span>
-            </a>
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
 
-            <div class="d-lg-none ms-auto me-4">
-                <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-            </div>
+                            <li class="breadcrumb-item active" aria-current="page">View Subject</li>
+                        </ol>
+                    </nav>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+                    <h2 class="text-white">Subjects Listing</h2>
+                </div>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                
             </div>
         </div>
-    </nav>
-    
+    </section>
+ 
     <div class="container">
-        <h3 class="text-center">Subjects</h3>
         <br>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for subject in subjects %}

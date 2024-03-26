@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, Response, session, redirect, url_for
+from flask import Flask, render_template, request, Response, session, redirect, url_for, jsonify
 import time
 import cohere
 import mysql.connector
 import json
+import numpy as np
+# import adaptive_learning
 
 app = Flask(__name__, static_url_path='/static')
 co = cohere.Client('WrwwKEMSMjFySzaPxE9NmECZ6gjs4cINUtioGtNF')
@@ -41,6 +43,12 @@ def index():
     else:
         # User is not authenticated, redirect to login page
         return redirect(url_for('login'))
+
+# Display Email 
+@app.context_processor
+def inject_email():
+    email = session.get('email')  # Get the email from session, if it exists
+    return dict(email=email)
 
 @app.route('/subjects')
 def subjects():
@@ -234,7 +242,6 @@ def subject_detail():
 
         # Convert api_response to JSON string
         # api_response_str = str(api_response)
-        print(type(api_response))
         global answerList
         answerList.clear()
         # Saving the answers in the list
@@ -247,12 +254,6 @@ def subject_detail():
         for i in api_response['questions']:
             print(i['question'])
             questionList.append(i['question'])
-        # api_response_json = json.loads(api_response)
-        # print(type(api_response))
-        # print(type(api_response_json))
-
-        # print(type(api_response_json))
-        # print(api_response_json['questions'])
         return render_template('premcq.html', api_response=api_response ,notify = False)
 
     else:
@@ -301,19 +302,22 @@ def login():
         cursor = connection.cursor(dictionary=True)
         cursor.execute("SELECT * FROM auth WHERE email = %s", (email,))
         user = cursor.fetchone()
-        cursor.close()
-        connection.close()
+        # cursor.close()
+        # connection.close()
+
+        # if user:
+        #     # User already exists, show error message
+        #     error = "User already exists. Please login instead."
+        #     return render_template('login.html', error=error)
 
         if user and user['password'] == password:
             # User authenticated, store user's email in session
             session['email'] = email
             session['UserId'] = user['id']
-            print("User logged in successfully")  # Add print statement for debugging
             return redirect(url_for('index'))  # Redirect to a protected page after login
         else:
             # Invalid credentials, show error message
             error = "Invalid email or password. Please try again."
-            print("Invalid email or password")  # Add print statement for debugging
             return render_template('login.html', error=error)
     else:
         return render_template('login.html')
@@ -335,6 +339,82 @@ def generate_pre_mcq(keyword):
         return None
 
 
+# ADAPTIVE LEARNING 
+# Define the Q-table
+# q_table = np.zeros((11, 3))  # Q-table for 11 MCQ scores (0 to 10) and 3 levels (1, 2, 3)
+
+# # Define the learning parameters
+# learning_rate = 0.1
+# discount_factor = 0.9
+# exploration_rate = 0.1
+
+# # Route to handle defining level requests
+# @app.route('/define_level', methods=['POST'])
+# def define_level():
+#     data = request.json
+#     mcq_score = data['mcq_score']
+    
+#     # Choose an action based on epsilon-greedy policy
+#     if np.random.uniform(0, 1) < exploration_rate:
+#         action = np.random.choice(3) 
+#     else:
+#         action = np.argmax(q_table[mcq_score])  
+    
+#     level = action + 1  
+    
+#     return jsonify({"level": level})
+
+# # Route to handle updating Q-table
+# @app.route('/update_q_table', methods=['POST'])
+# def update_q_table():
+#     data = request.json
+#     mcq_score = data['mcq_score']
+#     level = data['level']
+#     reward = data['reward']
+    
+#     # Update Q-table based on Q-learning update rule
+#     old_value = q_table[mcq_score, level - 1]  
+#     max_future_value = np.max(q_table[mcq_score + 1])
+#     new_value = old_value + learning_rate * (reward + discount_factor * max_future_value - old_value)
+#     q_table[mcq_score, level - 1] = new_value  
+    
+#     return jsonify({"message": "Q-table updated successfully"})
+
+# @app.route('/')
+# def dashboard():
+#     # Fetch subjects from the database
+#     subjects = fetch_subjects_from_database()
+
+#     # Fetch latest score for each subject
+#     latest_scores = {}
+#     for subject in subjects:
+#         latest_score = fetch_latest_score_from_database(subject)
+#         latest_scores[subject] = latest_score
+
+#     # Calculate defined level based on the latest score
+#     defined_levels = {}
+    
+#     return render_template('mcq.html', subjects=subjects, latest_scores=latest_scores, defined_levels=defined_levels)
+
+# def fetch_subjects_from_database():
+#     # Fetch subjects from the database
+#     query = "SELECT DISTINCT Subject FROM scores"
+#     cursor.execute(query)
+#     subjects = [row[0] for row in cursor.fetchall()]
+#     return subjects
+
+# def fetch_latest_score_from_database(subject):
+#     # Fetch the latest score for a given subject from the database
+#     query = "SELECT SubjectScore FROM scores WHERE Subject = %s ORDER BY id DESC LIMIT 1"
+#     cursor.execute(query, (subject,))
+#     result = cursor.fetchone()
+#     if result:
+#         return result[0]
+#     else:
+#         return None
+
+
+
 @app.route('/logout',methods=['GET','POST'])
 def logout():
     # Clear the session data
@@ -349,6 +429,20 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
+        if '@' not in email:
+            error = "Email address must contain '@'."
+            return render_template('register.html', error=error)
+
+        connection = get_mysql_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM auth WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        
+        if user:
+            # User already exists, show error message
+            error = "User already exists. Please login instead."
+            return render_template('login.html', error=error)
+        
         # Determine the role based on the email suffix
         if email.endswith('@nmims.edu'):
             role = 'Teacher'

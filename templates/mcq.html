@@ -18,76 +18,12 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
 
-<!--
-
-TemplateMo 590 topic listing
-
-https://templatemo.com/tm-590-topic-listing
-
--->
     </head>
 
-    <body class="topics-listing-page" id="top">
+    {% include 'navbar.html'%}
 
         <main>
-
-            <nav class="navbar navbar-expand-lg">
-                <div class="container">
-                    <a class="navbar-brand" href="/">
-                        <i class="bi-back"></i>
-                        <span>Topic</span>
-                    </a>
-
-                    <div class="d-lg-none ms-auto me-4">
-                        <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-                    </div>
-
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
-                            <li class="nav-item">
-                                <a class="nav-link " href="/">Home</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="index.html#section_2">Browse Topics</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="index.html#section_3">How it works</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="index.html#section_4">FAQs</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="index.html#section_5">Contact</a>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#section_5" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
-
-                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                                    <li><a class="dropdown-item active" href="topics-listing.html">Topics Listing</a></li>
-
-                                    <li><a class="dropdown-item" href="contact.html">Contact Form</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-
-                        <div class="d-none d-lg-block">
-                            <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-
-            <header class="site-header d-flex flex-column justify-content-center align-items-center">
+            <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
                 <div class="container">
                     <div class="row align-items-center">
 
@@ -105,22 +41,26 @@ https://templatemo.com/tm-590-topic-listing
 
                     </div>
                 </div>
-            </header>
-
-
-            <section class="section-padding">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-12 col-12 text-center">
-                            <!-- <h3 class="mb-4">Popular Topics</h3> -->
-                        </div>
-
-                        <div class="col-lg-8 col-12 mt-3 mx-auto">
+            </section>
+            
+            <div class="col-lg-8 col-12 mt-3 mx-auto">
+                <div class="rules-container">
+                    <h4>Rules and Regulations</h4>
+                    <ul>
+                        <li style="font-size: 16px; font-style: italic;">Make sure that you write your name and student ID correctly. Otherwise, the system can't record your grades.</li>
+                        <li style="font-size: 16px; font-style: italic;">The given time for this quiz is 10 minutes. After that, the form will be closed for you.</li>
+                        <li style="font-size: 16px; font-style: italic;">Students who will not submit their answers in time will receive 0.</li>
+                        <li style="font-size: 16px; font-style: italic;">You can only submit your answers once. If you wish to pause the quiz, please use the Save and Continue Later button.</li>
+                        <li style="font-size: 16px; font-style: italic;">Each question has its own grading points. After you submit your answers, we will evaluate them and let you know your grades later.</li>
+                        <li style="font-size: 16px; font-style: italic;">If you have any technical problem during the quiz, please take a screenshot or screen recording and send it to us.</li>
+                    </ul>
+                </div>
+                
+  
                         <center><h2>Subject Names</h2></center>
-    <ul>
+    <ul>                     
         {% for subject in subjects %}
-            <!-- <li>
+           <!-- <li>
                 <form action="/takemcq" method="POST">
                     <button type="submit" name="subject" value="{{ subject.Subject }}">
                         {{ subject.Subject }}
@@ -128,19 +68,49 @@ https://templatemo.com/tm-590-topic-listing
                 </form>
             </li> -->
             <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ subject.Subject }}</h5>
-                        <form action="/takemcq" method="POST">
-                            <input type="hidden" name="subject" value="{{ subject.Subject }}">
-                            <button type="submit" class="btn btn-primary">Take up {{ subject.Subject }} MCQ</button>
-                        </form>
+                <!-- <div class="row"> -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ subject.Subject }}</h5>
+                            <form action="/takemcq" method="POST">
+                                <input type="hidden" name="subject" value="{{ subject.Subject }}">
+                                <button type="submit" class="btn btn-primary">Take MCQ</button>
+                            </form>                           
                     </div>
                 </div>
-            </div>
-            <br>
+                <br>
+
+            </div>            
         {% endfor %}
     </ul>
+
+
+//   function defineLevel() {
+//         
+        
+//         fetch('/define_level', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 'mcq_score': mcqScore
+//             })
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             document.getElementById('userLevel').innerHTML = 'User Level: ' + data.level;
+//         })
+//         .catch(error => console.error('Error:', error));
+//     }
+
+//     // Call the function
+//     defineLevel();
+
+
+
+
+
                             <!-- <div class="custom-block custom-block-topics-listing bg-white shadow-lg mb-5">
                                 <div class="d-flex">
                                     <img src="images/topics/undraw_Remote_design_team_re_urdx.png" class="custom-block-image img-fluid" alt="">
