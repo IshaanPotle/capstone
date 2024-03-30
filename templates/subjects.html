@@ -20,7 +20,8 @@
             padding: 0;
         }
       
-        .card {            
+        .card {           
+            top: 10%; 
             border-radius: 10px; /* Add rounded corners */
             border: none; /* Remove border */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
@@ -67,7 +68,7 @@
                         </ol>
                     </nav>
 
-                    <h2 class="text-white">Subjects Listing</h2>
+                    <h2 class="text-white">Subjects</h2>
                 </div>
 
             </div>
@@ -75,11 +76,10 @@
     </section>
  
     <div class="container">
-        <br>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             {% for subject in subjects %}
             <div class="col">
-                <div class="card" style="background-image: url('https://img.freepik.com/premium-vector/collection-colored-thin-icon-learning-subject-book-graduated-hat-learning-education-concept-vector-illustration_168824-141.jpg'); background-size: cover;">
+                <div class="card">
                     <div class="card-body text-center"> <!-- Center text -->
                         <h5 class="card-title">{{ subject.Subject }}</h5>
                         <form action="/chapters" method="POST">
@@ -92,8 +92,6 @@
             {% endfor %}
         </div>
     </div>
-    
-    
 
     <footer class="site-footer section-padding">
         <div class="container">

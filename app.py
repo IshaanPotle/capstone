@@ -4,7 +4,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service  #
 import re
+<<<<<<< HEAD
 from os import name
+=======
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
 from flask import Flask, render_template, request, Response, session, redirect, url_for, jsonify
 import time
 import cohere
@@ -16,7 +19,11 @@ import urllib
 from youtube_transcript_api import YouTubeTranscriptApi
 import requests
 from urllib.parse import urljoin
+<<<<<<< HEAD
 from adaptive_learning import AdaptiveLearningModel
+=======
+# import adaptive_learning
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
 
 app = Flask(__name__, static_url_path='/static')
 co = cohere.Client('WrwwKEMSMjFySzaPxE9NmECZ6gjs4cINUtioGtNF')
@@ -113,8 +120,8 @@ def chapters():
         if connection:
             cursor = connection.cursor(dictionary=True)
             
-            # Query to retrieve chapters for the selected subject
-            cursor.execute("SELECT Chapter FROM subject WHERE Subject = %s", (selected_subject,))
+            # Query to retrieve chapters and descriptions for the selected subject
+            cursor.execute("SELECT Chapter, ChapterDescription FROM subject WHERE Subject = %s", (selected_subject,))
             chapters = cursor.fetchall()
             
             # Close cursor and connection
@@ -132,7 +139,14 @@ def chapters():
 
 @app.route('/textualcontent', methods=['GET', 'POST'])
 def textualcontent():
+<<<<<<< HEAD
     role = session.get('role')
+=======
+
+    role = session.get('role')
+    print("Role is:", role)
+
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
     if request.method == 'POST':
         subtopic = request.form['subject']
         print(request.form)
@@ -143,7 +157,7 @@ def textualcontent():
             cursor = connection.cursor(dictionary=True)
             
             # Construct and print the query for debugging
-            query = "SELECT TextualContent FROM subject WHERE Subtopics = %s"
+            query = "SELECT TextualContent, id FROM subject WHERE Subtopics = %s"
             
             # Execute the query with the subtopic value
             cursor.execute(query, (subtopic,))
@@ -151,14 +165,16 @@ def textualcontent():
             # Fetch the result
             textual_content = cursor.fetchone()
 
-            print(textual_content)
-            
             cursor.close()
             connection.close()
 
             # If textual content is found, render the template with it
             if textual_content:
+<<<<<<< HEAD
                 return render_template('textualcontent.html', textual_content=textual_content['TextualContent'], subtopic=subtopic, role=role,textual_content_id=id ,is_content_approved=is_content_approved)  # Access 'TextualContent' key
+=======
+                return render_template('textualcontent.html', textual_content=textual_content['TextualContent'], subtopic=subtopic, role=role,textual_content_id=id ,is_content_approved=is_content_approved)  # Pass 'subtopic' to the template
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
             else:
                 return "No textual content found for this subtopic: " + subtopic  # Return the subtopic for debugging
         else:
@@ -185,8 +201,30 @@ def extract_video_id(iframe_code):
             else:
                 return None
 
+
+def get_transcript(video_id):
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        formatted_transcript = []
+        for line in transcript:
+            start = line['start']
+            end = line['start'] + line['duration']
+            text = line['text']
+            formatted_transcript.append({'start': start, 'end': end, 'text': text})
+        return formatted_transcript
+    except Exception as e:
+        print("Error:", e)
+        return None
+def extract_video_id(iframe_code):
+        match = re.search(r'src=".*?youtube\.com/embed/([A-Za-z0-9_-]+)', iframe_code)
+        if match:
+            return match.group(1)
+        else:
+            return None
+
 @app.route('/videocontent', methods=['GET', 'POST'])
 def videocontent():
+
     if request.method == 'POST':
         subtopic = request.form['subject']
         
@@ -212,16 +250,29 @@ def videocontent():
                 # Extract the video ID from the URL
                 video_id = extract_video_id(video_content['Video'])
                 iframe_url = f"https://www.youtube.com/embed/{video_id}"
+<<<<<<< HEAD
                 transcript = get_transcript(video_id)
 
                 return render_template('videocontent.html', iframe_url=iframe_url)
+=======
+                
+                # Get transcript for the video
+                transcript = get_transcript(video_id)
+                print(transcript)
+                
+                return render_template('videocontent.html', iframe_url=iframe_url, transcript=transcript)
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
             else:
                 return "No video content found for this subtopic: " + subtopic  # Return the subtopic for debugging
         else:
             return "Failed to establish MySQL connection. Please check your database settings."
     else:
+<<<<<<< HEAD
         return render_template('videocontent.html') 
 
+=======
+        return render_template('videocontent.html')  # Render the form template if it's a GET request
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
 
 @app.route('/progress_report')
 def progress_report():
@@ -496,7 +547,10 @@ def login():
             # User authenticated, store user's email in session
             session['email'] = email
             session['UserId'] = user['id']
+<<<<<<< HEAD
             session['name'] = user['name']
+=======
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
             session['role'] = user['role']
             return redirect(url_for('index'))  # Redirect to a protected page after login
         else:
@@ -668,6 +722,7 @@ def search():
         return render_template('search_results.html', results=articles, topic=topic)  # Pass topic to template
     else:
         return "No topic provided"
+<<<<<<< HEAD
 
 
 # -------------------------------
@@ -748,6 +803,8 @@ def search():
 
 #----------------------------------------
 
+=======
+>>>>>>> 3719a197668d046e64373300989a09c71db4ae0c
 
 # ADAPTIVE LEARNING 
 
@@ -860,6 +917,91 @@ def register():
 
     return render_template('register.html', message=message)
 
+def update_reading_status(student_id, textual_content_id, read_status):
+    try:
+        connection = get_mysql_connection()
+        cursor = connection.cursor()
+
+        # Update the reading status in the database
+        cursor.execute("UPDATE student_reading_status SET read_status = %s WHERE student_id = %s AND textual_content_id = %s",
+                       (read_status, student_id, textual_content_id))
+        connection.commit()
+
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+
+        return True  # Success
+    except mysql.connector.Error as e:
+        print(f"Error updating reading status: {e}")
+        return False  # Failure
+
+# Route to handle submission of reading status by students
+@app.route('/submit_reading_status', methods=['POST'])
+def submit_reading_status():
+    if request.method == 'POST':
+        student_id = request.form['student_id']
+        textual_content_id = request.form['textual_content_id']
+        read_status = request.form['read_status']
+        # Update database with student's reading status
+        success = update_reading_status(student_id, textual_content_id, read_status)
+        if success:
+            return "Reading status submitted successfully"
+        else:
+            return "Failed to submit reading status", 500  # Internal server error
+
+def update_approval_status(textual_content_id, approved=True):
+    try:
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE student_reading_status SET approval_status = %s WHERE textual_content_id = %s", (int(approved), textual_content_id))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error updating approval status:", e)
+        return False
+
+@app.route('/approve_content', methods=['POST'])
+def approve_content():
+    if request.method == 'POST':
+        textual_content_id = request.form.get('textual_content_id')
+
+        if not textual_content_id:
+            return "Textual Content ID is missing", 400  # Bad request status code
+        
+        try:
+            # Check if the content is already approved
+            if is_content_approved(textual_content_id):
+                return "Content is already approved"
+
+            # If the content is not already approved, proceed with approval
+            success = update_approval_status(textual_content_id, approved=True)
+            if success:
+                return "Content approved successfully"
+            else:
+                return "Failed to approve content", 500  # Internal server error status code
+        
+        except Exception as e:
+            return f"An error occurred: {str(e)}", 500  # Internal server error status code
+
+def is_content_approved(textual_content_id):
+    try:
+        connection = get_mysql_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT approval_status FROM student_reading_status WHERE textual_content_id = %s", (textual_content_id,))
+        result = cursor.fetchone()
+        if result and result[0] == 1:  # Assuming 'approval_status' is a boolean column where 1 represents approval
+            print("It is approved")
+            return True
+        else:
+            return False
+    except Exception as e:
+        print("Error checking approval status:", e)
+        return False
+
+
+# Function to update reading status in the database
 def update_reading_status(student_id, textual_content_id, read_status):
     try:
         connection = get_mysql_connection()

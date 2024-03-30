@@ -66,6 +66,7 @@
             </div>
         </div>        
     </section>
+    <div class="container" style="padding-top: 20px;">
         <ul class="list-unstyled row">
             {% if subtopics %}
                 {% for subtopic in subtopics %}
@@ -75,11 +76,11 @@
                                 <h5 class="card-title">{{ subtopic.Subtopics }}</h5>
                                 <form action="/textualcontent" method="POST">
                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                    <button type="submit" class="btn btn-primary btn-article">Article</button>
-                                </form>
+                                    <button type="submit" class="btn btn-primary btn-article">Search Articles</button>
+                                </form>                                
                                 <form action="/videocontent" method="POST">
                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                    <button type="submit" class="btn btn-primary btn-video">Video</button>
+                                    <button type="submit" class="btn btn-primary btn-video">View Videos</button>
                                 </form>
                             </div>
                         </div>
@@ -90,6 +91,7 @@
             {% endif %}
         </ul>
     </div>
+    
     <footer class="site-footer section-padding">
         <div class="container">
             <div class="row">
