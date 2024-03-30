@@ -14,39 +14,44 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
     
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        /*  */
+        
         a {display: inline-block;
     color: #13547a;
     text-decoration: none;
 }
-        .card {
-            border-radius: 10px; /* Add rounded corners */
-            border: none; /* Remove border */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
-            transition: box-shadow 0.3s ease; /* Add transition for hover effect */
-            height: 200px;
-        }
-        .card:hover {
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Change shadow on hover */
-        }
-        .card-body {
-            padding: 20px; /* Add padding inside the card body */
-        }
-        .card-title {
-            font-size: 20px; /* Increase font size */
-            margin-top: 30px;
-        }
-        .btn-primary {
-            width: 100%; /* Make button full width */
-            margin-top: 30px;
-        }
-      
-    </style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.navbar {
+    margin-bottom: 20px; /* Add margin at the bottom of navbar */
+}
+.container {
+    padding: 10px;
+    margin-top: 20px; /* Add margin at the top of the container */
+}
+.card {
+    border-radius: 10px; /* Add rounded corners */
+    border: none; /* Remove border */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    transition: box-shadow 0.3s ease; /* Add transition for hover effect */
+}
+.card:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Change shadow on hover */
+}
+.card-body {
+    padding: 20px; /* Add padding inside the card body */
+}
+.card-title {
+    font-size: 20px; /* Increase font size */
+    margin-top: 30px;
+}
+.btn-primary {
+    width: 100%; /* Make button full width */
+    margin-top: 20px;
+}
+</style>
 </head>
 <body>
     {% include 'navbar.html'%}
@@ -56,7 +61,7 @@
                 <div class="col-lg-5 col-12">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="subjects.html"></a>'CHapter Name'</li> <!--FIX LATER-->
+                            <li class="breadcrumb-item"><a href="subjects.html">{{ selected_subject }}</a></li>
 
                             <li class="breadcrumb-item active" aria-current="page">View Chapter</li>
                         </ol>
@@ -70,23 +75,31 @@
     </section>
  
         
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" >
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% set seen_chapters = [] %}
             {% for chapter in chapters %}
+            {% if chapter.Chapter not in seen_chapters %}
+            {% set _ = seen_chapters.append(chapter.Chapter) %}
             <div class="col">
-                <div class="card" style="background-image: url('https://img.freepik.com/premium-vector/collection-colored-thin-icon-learning-subject-book-graduated-hat-learning-education-concept-vector-illustration_168824-141.jpg'); background-size: cover;">
-                    <div class="card-body text-center">
+                <div class="card">
+                    <div class="card-body" style="height: 32rem; overflow: hidden;">
                         <h5 class="card-title">{{ chapter.Chapter }}</h5>
+                        <p class="card-text" style="overflow: hidden; text-overflow: ellipsis;">{{ chapter.ChapterDescription }}</p>
                         <form action="/subtopics" method="POST">
                             <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
                             <button type="submit" class="btn btn-primary" style="background-color: #80d0c7;">View Subtopics</button>
                         </form>
                     </div>
-                </div>
+                </div> 
             </div>
+            {% endif %}
             {% endfor %}
-        </div>
-    </div>
+</div>
 
+    </div>
+    
+    
 
     <footer class="site-footer section-padding">
         <div class="container">

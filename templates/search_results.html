@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects</title>
+    <!-- CSS FILES -->        
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+</head>
+<body>
+    <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">View Articles</li>
+                        </ol>
+                    </nav>
+                    <h2 class="text-white">Articles to Read</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        {% if results %}
+            <ul>
+                {% for result in results %}
+                <li>
+                    <a href="/articles?id={{ result.result_id }}&topic={{ topic }}">{{ result.title }}</a>
+                    <p>{{ result.description }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+     </div>
+</body>
+</html>

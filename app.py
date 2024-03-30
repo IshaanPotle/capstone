@@ -1,9 +1,20 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service  #
+import re
 from flask import Flask, render_template, request, Response, session, redirect, url_for, jsonify
 import time
 import cohere
 import mysql.connector
 import json
+from bs4 import BeautifulSoup
 import numpy as np
+import urllib
+from youtube_transcript_api import YouTubeTranscriptApi
+import requests
+from urllib.parse import urljoin
 # import adaptive_learning
 
 app = Flask(__name__, static_url_path='/static')
@@ -100,8 +111,8 @@ def chapters():
         if connection:
             cursor = connection.cursor(dictionary=True)
             
-            # Query to retrieve chapters for the selected subject
-            cursor.execute("SELECT Chapter FROM subject WHERE Subject = %s", (selected_subject,))
+            # Query to retrieve chapters and descriptions for the selected subject
+            cursor.execute("SELECT Chapter, ChapterDescription FROM subject WHERE Subject = %s", (selected_subject,))
             chapters = cursor.fetchall()
             
             # Close cursor and connection
@@ -119,6 +130,10 @@ def chapters():
 
 @app.route('/textualcontent', methods=['GET', 'POST'])
 def textualcontent():
+
+    role = session.get('role')
+    print("Role is:", role)
+
     if request.method == 'POST':
         subtopic = request.form['subject']
         print(request.form)
@@ -129,7 +144,7 @@ def textualcontent():
             cursor = connection.cursor(dictionary=True)
             
             # Construct and print the query for debugging
-            query = "SELECT TextualContent FROM subject WHERE Subtopics = %s"
+            query = "SELECT TextualContent, id FROM subject WHERE Subtopics = %s"
             
             # Execute the query with the subtopic value
             cursor.execute(query, (subtopic,))
@@ -137,21 +152,41 @@ def textualcontent():
             # Fetch the result
             textual_content = cursor.fetchone()
 
-            print(textual_content)
-            
             cursor.close()
             connection.close()
 
             # If textual content is found, render the template with it
             if textual_content:
-                return render_template('textualcontent.html', textual_content=textual_content['TextualContent'])  # Access 'TextualContent' key
+                return render_template('textualcontent.html', textual_content=textual_content['TextualContent'], subtopic=subtopic, role=role,textual_content_id=id ,is_content_approved=is_content_approved)  # Pass 'subtopic' to the template
             else:
                 return "No textual content found for this subtopic: " + subtopic  # Return the subtopic for debugging
         else:
             return "Failed to establish MySQL connection. Please check your database settings."
 
+
+def get_transcript(video_id):
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        formatted_transcript = []
+        for line in transcript:
+            start = line['start']
+            end = line['start'] + line['duration']
+            text = line['text']
+            formatted_transcript.append({'start': start, 'end': end, 'text': text})
+        return formatted_transcript
+    except Exception as e:
+        print("Error:", e)
+        return None
+def extract_video_id(iframe_code):
+        match = re.search(r'src=".*?youtube\.com/embed/([A-Za-z0-9_-]+)', iframe_code)
+        if match:
+            return match.group(1)
+        else:
+            return None
+
 @app.route('/videocontent', methods=['GET', 'POST'])
 def videocontent():
+
     if request.method == 'POST':
         subtopic = request.form['subject']
         
@@ -175,14 +210,20 @@ def videocontent():
             # If video content is found, construct the iframe URL and render the template with it
             if video_content:
                 # Extract the video ID from the URL
-                video_id = video_content['Video'].split('/')[-1]
+                video_id = extract_video_id(video_content['Video'])
                 iframe_url = f"https://www.youtube.com/embed/{video_id}"
-                return render_template('videocontent.html', iframe_url=iframe_url)
+                
+                # Get transcript for the video
+                transcript = get_transcript(video_id)
+                print(transcript)
+                
+                return render_template('videocontent.html', iframe_url=iframe_url, transcript=transcript)
             else:
                 return "No video content found for this subtopic: " + subtopic  # Return the subtopic for debugging
         else:
             return "Failed to establish MySQL connection. Please check your database settings."
-
+    else:
+        return render_template('videocontent.html')  # Render the form template if it's a GET request
 
 
 @app.route('/topics_listing')
@@ -314,6 +355,7 @@ def login():
             # User authenticated, store user's email in session
             session['email'] = email
             session['UserId'] = user['id']
+            session['role'] = user['role']
             return redirect(url_for('index'))  # Redirect to a protected page after login
         else:
             # Invalid credentials, show error message
@@ -338,6 +380,152 @@ def generate_pre_mcq(keyword):
         print("No JSON content found in the response.")
         return None
 
+def scrape_khan_academy_articles(topic):
+    base_url = "https://www.khanacademy.org/search?search_again=1&page_search_query="
+    content_kinds = "&content_kinds=Article"
+    search_url = base_url + topic.replace(" ", "%20") + content_kinds
+
+    # Use a headless browser to render the JavaScript content
+    driver = webdriver.Chrome()
+    driver.get(search_url)
+
+    try:
+        # Wait for the search results to load
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'div')))
+        # Get the page source after JavaScript has loaded
+        page_source = driver.page_source
+    finally:
+        driver.quit()
+
+    # Parse the page source with BeautifulSoup
+    soup = BeautifulSoup(page_source, 'html.parser')
+    articles = []
+
+    search_results = soup.find_all('div', class_="_16owliz9")  # Finding each search result item
+
+    # Counter for limiting articles to 5
+    count = 0
+
+    for index, result in enumerate(search_results):
+        # Check if already scraped 5 articles
+        if count >= 5:
+            break
+
+        # Your code to extract information from each search result
+        a_tag = result.find('a', class_="_xne4a47")  # Find the anchor tag
+        if a_tag:
+            href = a_tag['href']  # Extract the href attribute
+
+            # Find the title within the additional div
+            title_div = result.find('div', class_="_pxfwtyj")
+            title = title_div.text.strip() if title_div else "Title not available"  # Extract the title or handle missing title
+
+            # Find the description within the span
+            description_span = result.find('span', class_="_w68pn83")
+            description = description_span.text.strip() if description_span else ""  # Extract the description or handle missing description
+
+            articles.append({'result_id': index, 'title': title, 'description': description, 'href': href})
+
+            count += 1  # Increment the counter for each scraped article
+
+    return articles
+
+def scrape_article_content(url):
+    # Fetch the article page content using requests
+    response = requests.get(url)
+    if response.status_code == 200:
+        page_source = response.text
+    else:
+        print("Failed to fetch article content:", response.status_code)
+        return []
+
+    # Parse the HTML content with BeautifulSoup
+    soup = BeautifulSoup(page_source, 'html.parser')
+
+    # Find all div elements with the class "paragraph"
+    paragraph_divs = soup.find_all('div', class_='paragraph')
+
+    # Extract the text content, images, and nested h2 tags from each paragraph div
+    article_content = []
+    seen_texts = set()  # Store seen texts to avoid duplicates
+    for div in paragraph_divs:
+        # Find images within the div
+        img_tags = div.find_all('img')
+        for img_tag in img_tags:
+            img_url = img_tag['src']
+            credit = img_tag.find_next('em')
+            credit_text = credit.get_text(strip=True) if credit else None
+            article_content.append({'type': 'image', 'url': img_url, 'credit': credit_text})
+        
+        # Find all h2 tags within the div
+        h2_tags = div.find_all('h2')
+        for h2_tag in h2_tags:
+            # Extract the text content of the h2 tag
+            h2_content = h2_tag.text.strip()
+            if h2_content not in seen_texts:
+                article_content.append({'type': 'h2', 'content': h2_content, 'bold': True})  # Mark as bold
+                seen_texts.add(h2_content)
+
+            # Check if there is no text immediately following the h2 tag
+            next_element = h2_tag.find_next_sibling()
+            if not next_element or not next_element.get_text(strip=True):
+                article_content.append({'type': 'text', 'content': ''})  # Add an empty text entry
+
+        # Extract the text content of the div
+        paragraph_text = div.get_text(strip=True)
+        if paragraph_text and paragraph_text not in seen_texts:
+            article_content.append({'type': 'text', 'content': paragraph_text})
+            seen_texts.add(paragraph_text)
+
+    return article_content
+
+@app.route('/articles')
+def show_article_content():
+    result_id = request.args.get('id')
+    topic = request.args.get('topic')  # Retrieve topic from request parameters
+    base_url = "https://www.khanacademy.org"  # Base URL of the Khan Academy website
+    
+    print("result_id:", result_id)
+    print("topic:", topic)
+    
+    # Check if result_id and topic are not None
+    if result_id is not None and result_id.isdigit() and topic is not None:
+        result_id = int(result_id)
+        articles = scrape_khan_academy_articles(topic)
+        print("articles:", articles)
+        if 0 <= result_id < len(articles):
+            article_href = articles[result_id]['href']
+            print("This is the href", article_href)
+            
+            # Construct the absolute URL
+            url = urllib.parse.urljoin(base_url, article_href)
+            print("This is the full URL", url)
+            
+            # Scrape article content
+            article_content = scrape_article_content(url)
+            
+            # Manually add index to each item in article content
+            article_content_with_index = [(index, item) for index, item in zip(range(len(article_content)), article_content)]
+            
+            # Print out image URLs for debugging
+            for index, item in article_content_with_index:
+                if item['type'] == 'image':
+                    print("Image URL:", item['url'])
+
+            print("topic:", topic)
+            print("articles:", articles)
+
+            return render_template('articles.html', article_content=article_content_with_index)  # Split article content into paragraphs
+    return "Article not found"
+
+@app.route('/search', methods=['GET'])
+def search():
+    topic = request.args.get('topic')
+    if topic:
+        articles = scrape_khan_academy_articles(topic)
+        return render_template('search_results.html', results=articles, topic=topic)  # Pass topic to template
+    else:
+        return "No topic provided"
 
 # ADAPTIVE LEARNING 
 # Define the Q-table
@@ -461,10 +649,96 @@ def register():
         finally:
             conn.close()
 
+        session['role'] = role
         # Redirect to the login page upon successful registration
         return redirect(url_for('login'))
 
     return render_template('register.html', message=message)
+
+
+# Function to update reading status in the database
+def update_reading_status(student_id, textual_content_id, read_status):
+    try:
+        connection = get_mysql_connection()
+        cursor = connection.cursor()
+
+        # Update the reading status in the database
+        cursor.execute("UPDATE student_reading_status SET read_status = %s WHERE student_id = %s AND textual_content_id = %s",
+                       (read_status, student_id, textual_content_id))
+        connection.commit()
+
+        # Close cursor and connection
+        cursor.close()
+        connection.close()
+
+        return True  # Success
+    except mysql.connector.Error as e:
+        print(f"Error updating reading status: {e}")
+        return False  # Failure
+
+# Route to handle submission of reading status by students
+@app.route('/submit_reading_status', methods=['POST'])
+def submit_reading_status():
+    if request.method == 'POST':
+        student_id = request.form['student_id']
+        textual_content_id = request.form['textual_content_id']
+        read_status = request.form['read_status']
+        # Update database with student's reading status
+        success = update_reading_status(student_id, textual_content_id, read_status)
+        if success:
+            return "Reading status submitted successfully"
+        else:
+            return "Failed to submit reading status", 500  # Internal server error
+
+def update_approval_status(textual_content_id, approved=True):
+    try:
+        conn = get_mysql_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE student_reading_status SET approval_status = %s WHERE textual_content_id = %s", (int(approved), textual_content_id))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print("Error updating approval status:", e)
+        return False
+
+@app.route('/approve_content', methods=['POST'])
+def approve_content():
+    if request.method == 'POST':
+        textual_content_id = request.form.get('textual_content_id')
+
+        if not textual_content_id:
+            return "Textual Content ID is missing", 400  # Bad request status code
+        
+        try:
+            # Check if the content is already approved
+            if is_content_approved(textual_content_id):
+                return "Content is already approved"
+
+            # If the content is not already approved, proceed with approval
+            success = update_approval_status(textual_content_id, approved=True)
+            if success:
+                return "Content approved successfully"
+            else:
+                return "Failed to approve content", 500  # Internal server error status code
+        
+        except Exception as e:
+            return f"An error occurred: {str(e)}", 500  # Internal server error status code
+
+def is_content_approved(textual_content_id):
+    try:
+        connection = get_mysql_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT approval_status FROM student_reading_status WHERE textual_content_id = %s", (textual_content_id,))
+        result = cursor.fetchone()
+        if result and result[0] == 1:  # Assuming 'approval_status' is a boolean column where 1 represents approval
+            print("It is approved")
+            return True
+        else:
+            return False
+    except Exception as e:
+        print("Error checking approval status:", e)
+        return False
 
 
 @app.route('/generate', methods=['POST'])
