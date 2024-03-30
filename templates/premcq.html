@@ -1,209 +1,243 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pre-Mcq Test</title>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- CSS FILES -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/bootstrap-icons.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}"
-    />
-  </head>
-  <body class="topics-listing-page" id="top">
-    {% include 'navbar.html'%} {% if notify %}
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title>Pre-Mcq Test</title>
+
+        <!-- CSS FILES -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+
+<!--
+
+TemplateMo 590 topic listing
+
+https://templatemo.com/tm-590-topic-listing
+
+-->
+    </head>
+
+    {%if notify%}
     <center>
-      <p>Your Score is: {{ matched_items }}</p>
+        <p>
+            Your Score is:  {{ matched_items}}
+        </p>
     </center>
     {% else %}
-    <main>
-      <section
-        class="hero-section d-flex justify-content-center align-items-center"
-        id="section_1"
-      >
-        <div class="container">
-          <div class="row align-items-center">
-            <div class="col-lg-5 col-12">
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="/">Homepage</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">
-                    Pre-Study MCQ
-                  </li>
-                </ol>
-              </nav>
-              <h2 class="text-white">Pre-Study MCQ</h2>
-            </div>
-          </div>
-        </div>
-      </section>
+    <body class="topics-listing-page" id="top">
+        {% include 'navbar.html'%}
+        <main>
 
-      <section class="section-padding">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-12 col-12 text-center">
-              <h3 class="mb-4">MCQ</h3>
-              <div class="timer" id="timer">10:00</div>
-            </div>
+         
 
-            <form action="/checkAns" method="POST" id="mcqForm">
-                <div id="mcq-container">
-                    {% for question in api_response.questions %}
-                    <div class="question-block">
-                        <div class="question">
-                            <h5>{{ question.question }}</h5>
-                            <div class="options">
-                                {% for option in question.options %}
-                                <input type="radio" id="{{option}}" name="{{ question.question }}" value="{{ option }}" required>
-                                <label for="{{option}}">{{ option }}</label><br>
-                                {% endfor %}
-                            </div>
+
+            <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+                <div class="container">
+                    <div class="row align-items-center">
+
+                        <div class="col-lg-5 col-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/">Homepage</a></li>
+
+                                    <li class="breadcrumb-item active" aria-current="page">Pre-Study MCQ</li>
+                                </ol>
+                            </nav>
+
+                            <h2 class="text-white">Pre-Study MCQ</h2>
                         </div>
+
                     </div>
+                </div>
+            </section>
+
+<div class="col-lg-12 col-12 text-center">
+    <h3 class="mb-4">MCQ</h3>
+    <!-- <div class="timer" id="timer">10:00</div> -->
+  </div>                      
+
+<form action="/checkAns" method="POST">
+    <div id="mcq-container">
+        {% for question in api_response.questions %}
+        <div class="question-block">
+            <div class="question">
+                <h5><span style="color: red;">* </span> {{ question.question }}</h5>
+                <div class="options">
+                    {% for option in question.options %}
+                        <input type="radio" id="{{option}}" name="{{ question.question }}" value="{{ option }}" required>
+                        <label for="{{option}}">{{ option }}</label><br>
                     {% endfor %}
                 </div>
-            </form>
-            
-              <button id="submit-btn" type="submit">Submit</button>
-            </form>
-            <div id="result"></div>
-          </div>
+            </div>
         </div>
-      </section>
-    </main>
-    {% endif %}
+        {% endfor %}
+    </div>
+    <button id="submit-btn" type="submit">Submit</button>
+</form>
+<div id="result"></div>
+    {% endif%}
+        </main>
+        <style>
+            .question-block {
+                background-color: #ffffff;
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                margin-bottom: 20px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            
+            .question-block .question {                
+                font-size: 17px;
+                margin-bottom: 10px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-    <!-- JAVASCRIPT FILES -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/jquery.sticky.js"></script>
-    <script src="js/custom.js"></script>
+            }
+            
+            .question-block .options label {
+                margin-bottom: 5px;
+            }
+            
+            .question-block .options input {
+                margin-bottom: 5px;
+            }
+            
+              .question {
+                font-weight: bold;
+                font: size 13px;
+                margin-left: 25px;
+              }
+              .options {
+                font-size: 14px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                padding: 10px;
+                margin-left: 25px;
+                margin-bottom: 10px;
+              }
+              .options input {
+                margin-bottom: 5px;
+              }
+              .options label {
+                margin-bottom: 5px;
+              }
+              .timer {
+                margin-bottom: 40px ;
+                position: absolute;
+                right: 20px;
+                font-size: 18px;
+                color: #333;
+                padding: 5px 10px;
+                border-radius: 5px;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+              }
+              #submit-btn {
+                background: #79c9c2;
+                border: none;
+                padding: 15px 25px; 
+                width: 155px;
+                font-size: 20px;
+                color: white;
+                border-radius: 5px;
+                font-weight: bold;
+                transition: background-color 0.3s ease; 
+                cursor: pointer; 
+              }
+            
+              #submit-btn:hover {
+                background-color: #5aa8a0;
+              }
+            </style>
+            
 
-    <script>
-      var timerElement = document.getElementById("timer");
-      var totalTime = 600; // 10 minutes in seconds
-      var timer;
-      var selectedOptions = {};
+		<footer class="site-footer section-padding">
+            <div class="container">
+                <div class="row">
 
-      function startTimer() {
-        var minutes, seconds;
-        timer = setInterval(function () {
-          minutes = parseInt(totalTime / 60, 10);
-          seconds = parseInt(totalTime % 60, 10);
+                    <div class="col-lg-3 col-12 mb-4 pb-2">
+                        <a class="navbar-brand mb-2" href="index.html">
+                            <i class="bi-back"></i>
+                            <span>Topic</span>
+                        </a>
+                    </div>
 
-          minutes = minutes < 10 ? "0" + minutes : minutes;
-          seconds = seconds < 10 ? "0" + seconds : seconds;
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <h6 class="site-footer-title mb-3">Resources</h6>
 
-          timerElement.textContent = minutes + ":" + seconds;
+                        <ul class="site-footer-links">
+                            <li class="site-footer-link-item">
+                                <a href="#" class="site-footer-link">Home</a>
+                            </li>
 
-          if (--totalTime < 0) {
-            clearInterval(timer);
-            // saveOptionsAndShowResults();
-          }
-        }, 1000);
-      }
+                            <li class="site-footer-link-item">
+                                <a href="#" class="site-footer-link">How it works</a>
+                            </li>
 
-    //   function saveOptionsAndShowResults() {
-    //     var form = document.getElementById("mcqForm");
-    //     var questions = form.getElementsByClassName("question");
+                            <li class="site-footer-link-item">
+                                <a href="#" class="site-footer-link">FAQs</a>
+                            </li>
 
-    //     for (var i = 0; i < questions.length; i++) {
-    //       var question = questions[i];
-    //       var questionText = question.querySelector("h5").textContent;
-    //       var selectedOption = question.querySelector("input:checked").value;
-    //       selectedOptions[questionText] = selectedOption;
-    //     }
+                            <li class="site-footer-link-item">
+                                <a href="#" class="site-footer-link">Contact</a>
+                            </li>
+                        </ul>
+                    </div>
 
-    //     document.getElementById("result").innerHTML =
-    //       "Time is up! Options saved: " + JSON.stringify(selectedOptions);
-    //   }
+                    <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                        <h6 class="site-footer-title mb-3">Information</h6>
 
-      // Start the timer when the page loads
-      window.onload = startTimer;
-    </script>
-  </body>
+                        <p class="text-white d-flex mb-1">
+                            <a href="tel: 305-240-9671" class="site-footer-link">
+                                305-240-9671
+                            </a>
+                        </p>
+
+                        <p class="text-white d-flex">
+                            <a href="mailto:info@company.com" class="site-footer-link">
+                                info@company.com
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            English</button>
+
+                            <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" type="button">Thai</button></li>
+
+                                <li><button class="dropdown-item" type="button">Myanmar</button></li>
+
+                                <li><button class="dropdown-item" type="button">Arabic</button></li>
+                            </ul>
+                        </div>
+
+                        <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
+                        <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
+
+                    </div>
+
+                </div>
+            </div>
+        </footer>
+
+        <!-- JAVASCRIPT FILES -->
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script src="js/jquery.sticky.js"></script>
+        <script src="js/custom.js"></script>
+
+    </body>
 </html>
-
-<style>
-.question-block {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.question-block .question {
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.question-block .options label {
-    margin-bottom: 5px;
-}
-
-.question-block .options input {
-    margin-bottom: 5px;
-}
-
-  .question {
-    font-weight: bold;
-    font: size 13px;
-    margin-left: 25px;
-  }
-  .options {
-    font-size: 16px;
-    padding: 10px;
-    margin-left: 25px;
-    margin-bottom: 10px;
-  }
-  .options input {
-    margin-bottom: 5px;
-  }
-  .options label {
-    margin-bottom: 5px;
-  }
-  .timer {
-    position: absolute;
-    right: 20px; /* Adjust as needed */
-    font-size: 18px;
-    color: #333;
-    padding: 5px 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  #submit-btn {
-    background: #79c9c2;
-    border: none;
-    padding: 15px 25px; /* Adjusted padding for a more balanced look */
-    width: 155px;
-    font-size: 20px;
-    color: white;
-    border-radius: 5px;
-    font-weight: bold;
-    transition: background-color 0.3s ease; /* Transition effect for hover */
-    cursor: pointer; /* Change cursor to pointer on hover */
-  }
-
-  /* Hover effect */
-  #submit-btn:hover {
-    background-color: #5aa8a0; /* Darken the background color on hover */
-  }
-</style>

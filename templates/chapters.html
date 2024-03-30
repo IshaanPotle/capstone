@@ -20,10 +20,14 @@
             padding: 0;
         }
         /*  */
-        a {display: inline-block;
-    color: #13547a;
-    text-decoration: none;
-}
+        .breadcrumb-item {display: inline-block;
+                color: #13547a;
+                text-decoration: none;
+            }
+        .breadcrumb-item:hover {
+            color: #FFF;
+            cursor: pointer;
+        }
         .card {
             border-radius: 10px; /* Add rounded corners */
             border: none; /* Remove border */
@@ -56,7 +60,7 @@
                 <div class="col-lg-5 col-12">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="subjects.html"></a>'CHapter Name'</li> <!--FIX LATER-->
+                            <li class="breadcrumb-item"><a href="/subjects"></a>Subjects</li> <!--FIX LATER-->
 
                             <li class="breadcrumb-item active" aria-current="page">View Chapter</li>
                         </ol>
@@ -70,21 +74,26 @@
     </section>
  
         
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" >
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% set seen_chapters = [] %}
             {% for chapter in chapters %}
+            {% if chapter.Chapter not in seen_chapters %}
+            {% set _ = seen_chapters.append(chapter.Chapter) %}
             <div class="col">
-                <div class="card" style="background-image: url('https://img.freepik.com/premium-vector/collection-colored-thin-icon-learning-subject-book-graduated-hat-learning-education-concept-vector-illustration_168824-141.jpg'); background-size: cover;">
-                    <div class="card-body text-center">
+                <div class="card">
+                    <div class="card-body" style="height: 32rem; overflow: hidden;">
                         <h5 class="card-title">{{ chapter.Chapter }}</h5>
+                        <p class="card-text" style="overflow: hidden; text-overflow: ellipsis;">{{ chapter.ChapterDescription }}</p>
                         <form action="/subtopics" method="POST">
                             <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
                             <button type="submit" class="btn btn-primary" style="background-color: #80d0c7;">View Subtopics</button>
                         </form>
                     </div>
-                </div>
+                </div> 
             </div>
+            {% endif %}
             {% endfor %}
-        </div>
     </div>
 
 

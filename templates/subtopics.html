@@ -34,10 +34,14 @@
             color: #fff; /* Set button text color */
         }
        
-    a {display: inline-block;
-    color: #13547a;
-    text-decoration: none;
-}
+        .breadcrumb-item {display: inline-block;
+                color: #13547a;
+                text-decoration: none;
+            }
+        .breadcrumb-item:hover {
+            color: #FFF;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +54,7 @@
                 <div class="col-lg-5 col-12">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
+                            <li class="breadcrumb-item"><a href="/chapters">Chapter</a></li>
 
                             <li class="breadcrumb-item active" aria-current="page">View Subject</li>
                         </ol>
@@ -60,7 +64,7 @@
                 </div>
 
             </div>
-        </div>
+        </div>        
     </section>
         <ul class="list-unstyled row">
             {% if subtopics %}

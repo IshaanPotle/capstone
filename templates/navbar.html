@@ -57,7 +57,7 @@
                             </li>
     
                             <li class="nav-item">
-                                <a class="nav-link click-scroll" href="#section_5">Contact</a>
+                                <a class="nav-link click-scroll" href="{{ url_for('contact') }}">Contact</a>
                             </li>
 
                             <li class="nav-item dropdown">
@@ -65,7 +65,7 @@
 
                                 <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
                                     <li><a class="dropdown-item" href="{{ url_for('topics_listing') }}">Topics Listing</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('contact') }}">Progress Report</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('progress_report') }}">Progress Report</a></li>
                                 </ul>
                                 
                             </li>
@@ -80,9 +80,9 @@
                                         </div>
                                     </td>
                                     <td>
-                                        {% if email %}
-                                        <div style="color: #fff; text-transform: uppercase ;font-size: 14px; font-family: 'Montserrat', sans-serif;">
-                                          {{ email }}
+                                        {% if name %}
+                                        <div style="color: #fff; text-transform: uppercase; font-size: 14px; font-family: 'Montserrat', sans-serif;">
+                                            {{ name }}
                                         </div>
                                         {% endif %}
                                     </td>
@@ -107,13 +107,13 @@
             </nav>
 
             <style>
-         /* Navbar Styling */
+
     .navbar-nav .nav-link.active {
-        color: #13547a !important; /* Change the active color to #13547a */
+        color: #13547a !important; 
     }
     .navbar_table tr td {
     padding: 10px;
-}
+    }
     .navbar_table tr td p{
         display: inline-block;
         color: var(--white-color);
@@ -128,10 +128,10 @@
         margin-bottom: 0px !important;
     }
     .navbar-nav .nav-link {
-    transition: color 0.3s ease; /* Smooth transition for color change */
-}
+        transition: color 0.3s ease; 
+    }
 
-            </style>
+</style>
 
 <script>
        document.addEventListener("DOMContentLoaded", function() {
