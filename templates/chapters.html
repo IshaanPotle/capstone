@@ -72,7 +72,54 @@
             </div>
         </div>
     </section>
- 
+<br>
+<ul class="list-unstyled row">
+    <h5 style="margin-left: 75px;">Start with Chapter: 
+    {% if selected_subject == 'Biology' %}
+        {% if subject_level == 1 %}
+            <li>Basic Biology & Subtopic 'Cells'</li>
+        {% elif subject_level == 2 %}
+            <li>Plant Physiology & Subtopic 'Respiration in plants'</li>
+        {% elif subject_level == 3 %}
+            <li>Quiz of SubTopic 'Cells' in Basic Biology</li>  
+        {% endif %}
+    {% elif selected_subject == 'English' %}
+        {% if subject_level == 1 %}
+            <li>Grammar and Syntax & Subtopic 'Syntax'</li>
+        {% elif subject_level == 2 %}
+            <li>Comprehension & Subtopic 'Comprehension and what it means'</li>
+        {% elif subject_level == 3 %}
+            <li>Quiz of Subtopic 'Syntax' in Grammar and Syntax</li>
+        {% endif %}
+    {% elif selected_subject == 'Social Sciences' %}
+        {% if subject_level == 1 %}
+            <li>Our Constitution & Subtopic 'Constitution and its Significance'</li>
+        {% elif subject_level == 2 %}
+            <li>Elections & Subtopic 'Elections and their scopes'</li>
+        {% elif subject_level == 3 %}
+            <li>Quiz of Subtopic 'Elections and their scopes' in Elections</li>
+        {% endif %}
+    {% elif selected_subject == 'Chemistry' %}
+        {% if subject_level == 1 %}
+            <li>Basic Chemistry & Subtopic 'Atomic Structure'</li>
+        {% elif subject_level == 2 %}
+            <li>Chemical Reactions & Subtopic 'Types of Chemical Reactions'</li>
+        {% elif subject_level == 3 %}
+            <li>Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions</li>
+        {% endif %}
+    {% elif selected_subject == 'Physics' %}
+        {% if subject_level == 1 %}
+            <li>Basic Physics & Subtopic 'Mechanics'</li>
+        {% elif subject_level == 2 %}
+            <li>Electromagnetism & Subtopic 'Electromagnetic Induction'</li>
+        {% elif subject_level == 3 %}
+            <li>Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism</li>
+        {% endif %}
+    {% endif %}
+</h5>
+</ul>
+
+
         
     <div class="container">
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -87,7 +134,7 @@
                         <p class="card-text" style="overflow: hidden; text-overflow: ellipsis;">{{ chapter.ChapterDescription }}</p>
                         <form action="/subtopics" method="POST">
                             <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
-                            <button type="submit" class="btn btn-primary" style="background-color: #80d0c7;">View Subtopics</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #80d0c7; border-color: #80d0c7;">View Subtopics</button>
                         </form>
                     </div>
                 </div> 
@@ -98,8 +145,6 @@
 
     </div>
     
-    
-
     <footer class="site-footer section-padding">
         <div class="container">
             <div class="row">

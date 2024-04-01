@@ -58,11 +58,6 @@ def get_user_info():
 @app.route('/')
 def index():
     if 'email' in session:
-        # User is authenticated, get the email from session
-        email = session['email']
-        name = session.get('name') 
-        role = session.get('role')
-        # Pass the email to the template
         return render_template('index.html', user=get_user_info())
     else:
         # User is not authenticated, redirect to login page
@@ -145,6 +140,8 @@ def chapters():
     if request.method == 'POST':
         selected_subject = request.form['Chapter']
         session['selected_subject'] = selected_subject
+        email = session.get('email')
+        print(email)
         print(selected_subject)
 
     try:
@@ -157,17 +154,26 @@ def chapters():
             cursor.execute("SELECT Chapter, ChapterDescription FROM subject WHERE Subject = %s", (selected_subject,))
             chapters = cursor.fetchall()
             
+            # Fetching subject level            
+            cursor.execute("SELECT DISTINCT SubjectLevel FROM score WHERE email = %s AND Subject = %s", (email, selected_subject))
+            subject_level_result = cursor.fetchone()
+            print(subject_level_result)
+            subject_level_str = subject_level_result['SubjectLevel'] if subject_level_result and 'SubjectLevel' in subject_level_result else None
+            subject_level = int(subject_level_str) if subject_level_str is not None else None
+            print(subject_level)
+            
             # Close cursor and connection
             cursor.close()
             connection.close()
             
             if chapters:
-                # Pass the chapters data to the template
-                return render_template('chapters.html',  user=get_user_info(),chapters=chapters)
+                # Pass the chapters data and subject level to the template
+                return render_template('chapters.html',  user=get_user_info(), chapters=chapters, selected_subject=selected_subject, subject_level=subject_level)
             else:
                 return "No chapters found for selected subject: {}".format(selected_subject)
     except Exception as e:
         return "An error occurred: {}".format(str(e))
+
     
 @app.route('/textualcontent', methods=['GET', 'POST'])
 def textualcontent():
@@ -469,7 +475,7 @@ def ans():
     cursor.close()
     connection.close()
 
-    return render_template('premcq.html', notify = True, matched_items = matched_items, level = level)
+    return render_template('premcq.html', notify = True, matched_items = matched_items, level = level, subject =subject)
 
 # FOR TOPIC 
 @app.route('/takemcq_subtopics', methods=['POST'])
@@ -542,7 +548,7 @@ def postmcq_ans():
     connection.close()
 
     # Redirect or render a response as needed
-    return redirect(url_for('some_route'))  # or render_template(...)
+    return redirect('postmcq.html') 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

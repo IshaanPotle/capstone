@@ -33,6 +33,50 @@
                 Take MCQ Test.
             {% endif %}
         </p>
+        <p>Start with Chapter 
+            {% if subject == 'Biology' %}
+            {% if level == '1' %}
+                Basic Biology & Subtopic 'Cells' 
+            {% elif level == '2' %}
+                Plant Physiology & 'Respiration in plants'
+            {% elif level == '3' %}
+                Quiz of SubTopic 'Cells' in Basic Biology
+            {% endif %}
+        {% elif subject == 'English' %}
+            {% if level == '1' %}
+                Grammer and Syntax & Subtopic 'Syntax' 
+            {% elif level == '2' %}
+                Comprehension & Subtopic 'Comprehension and what it means'
+            {% elif level == '3' %}
+                Quiz of Subtopic 'Syntax' in Grammer and Syntax
+            {% endif %}
+        {% elif subject == 'Social Sciences' %}
+            {% if level == '1' %}
+                Our Constitution & Subtopic 'Constitution and its Significance' 
+            {% elif level == '2' %}
+                Elections & Subtopic 'Elections and their scopes'
+            {% elif level == '3' %}
+                Quiz of Subtopic 'Elections and their scopes' in Elections
+            {% endif %}
+        {% elif subject == 'Chemistry' %}
+            {% if level == '1' %}
+                Basic Chemistry & Subtopic 'Atomic Structure' 
+            {% elif level == '2' %}
+                Chemical Reactions & Subtopic 'Types of Chemical Reactions'
+            {% elif level == '3' %}
+                Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions
+            {% endif %}
+        {% elif subject == 'Physics' %}
+            {% if level == '1' %}
+                Basic Physics & Subtopic 'Mechanics' 
+            {% elif level == '2' %}
+                Electromagnetism & Subtopic 'Electromagnetic Induction'
+            {% elif level == '3' %}
+                Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism
+            {% endif %}
+        {% endif %}
+        
+        </p>
         <button class="btn-ok" onclick="redirectToSubjects()">OK</button>
     </div>
 

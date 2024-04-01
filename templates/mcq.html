@@ -68,51 +68,59 @@
                 </div>
             </section>        
             
- <center><h2>Subject Names</h2></center>
-    <ul>                     
-        {% for subject in subjects %}
-        <div class="col">
-            <div class="card" style="margin-right: 20px;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ subject.Subject }}</h5>
-                   
-                    <p style="font-size: 15px;">Your Level: 
-                        {% if user_levels.get(subject.Subject) %}
-                            {{ user_levels[subject.Subject] }}
-                        {% else %}
-                            'Not Yet Attempted'
-                        {% endif %}
-                    </p>
-               
-                
-                        <!-- Progress Bar Display -->
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" style="width: 70%;"></div>
-                            <div class="progress-text">70%</div>
-                        </div>
-                        <!-- End Progress Bar Display -->                  
-                    
-                        <!-- Take MCQ Button -->
-                        <div style="display: flex;">
-                            <!-- Take MCQ Button -->
-                            <form id="mcqForm" action="/takemcq" method="POST" style="margin-right: 10px;">
-                                <input type="hidden" name="subject" value="{{ subject.Subject }}">
-                                <button type="button" id="startMCQBtn" class="btn btn-primary">Take MCQ</button>
-                            </form>
+            <center><h2>Subject Names</h2></center>
+            <ul>                     
+                {% for subject in subjects %}
+                {% if user %}
+                <div class="col">
+                    <div class="card" style="margin-right: 20px;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ subject.Subject }}</h5>
+        
+                            {% if user.role == 'Student' %}
+                            <p style="font-size: 15px;">
+                                {% if user_levels.get(subject.Subject) %}
+                                Your Level: {{ user_levels[subject.Subject] }}
+                                {% else %}
+                                    You have not yet attempeted
+                                {% endif %}
+                            </p>
+                       
                         
-                            <!-- View Chapters Button -->
-                            <form action="/chapters" method="POST" style="margin-bottom: 10px;">
-                                <input type="hidden" name="Chapter" value="{{ subject.Subject }}">
-                                <button type="submit" class="btn btn-primary">View Chapters</button>
-                            </form>
+                                <!-- Progress Bar Display -->
+                                <!-- <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: 70%;"></div>
+                                    <div class="progress-text">70%</div>
+                                </div> -->
+                                <!-- End Progress Bar Display -->                  
+                            
+                                <!-- Take MCQ Button -->
+                                <div style="display: flex">
+                                    <!-- Take MCQ Button -->
+                                    {% if not user_levels.get(subject.Subject) %}
+                                    <form id="mcqForm" action="/takemcq" method="POST" style="margin-right: 10px;">
+                                        <input type="hidden" name="subject" value="{{ subject.Subject }}">
+                                        <button type="button" id="startMCQBtn" class="btn btn-primary">Take MCQ</button>
+                                    </form>
+                                    {% endif %}
+                                    <!-- View Chapters Button -->
+                                    {% if user_levels.get(subject.Subject) %}
+                                    <form action="/chapters" method="POST" style="margin-bottom: 10px;">
+                                        <input type="hidden" name="Chapter" value="{{ subject.Subject }}">
+                                        <button type="submit" class="btn btn-primary">View Chapters</button>
+                                    </form>
+                                    {% endif %}
+                                    {% endif %}
+                                </div>
+                            <!-- End View Chapters Button -->
+                            {% endif %}
                         </div>
-                    <!-- End View Chapters Button -->
+                        </div>
+                    </div>
+                    <br>
                 </div>
-                </div>
-            </div>
-            <br>
-        </div>
-        {% endfor %}
+                {% endfor %}
+        
 
             
             <div id="rulesPopup" class="modal" tabindex="-1" role="dialog">
