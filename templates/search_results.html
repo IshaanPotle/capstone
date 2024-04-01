@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+    <style>
+        .card-container {
+            margin-top: 20px;
+        }
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .card-description {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
@@ -27,17 +46,17 @@
     </section>
     <div class="container">
         {% if results %}
-            <ul>
+            <div class="card-container">
                 {% for result in results %}
-                <li>
-                    <a href="/articles?id={{ result.result_id }}&topic={{ topic }}">{{ result.title }}</a>
-                    <p>{{ result.description }}</p>
-                </li>
+                <div class="card">
+                    <h3 class="card-title"><a href="/articles?id={{ result.result_id }}&topic={{ topic }}">{{ result.title }}</a></h3>
+                    <p class="card-description">{{ result.description }}</p>
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
             <p>No results found.</p>
         {% endif %}
-     </div>
+    </div>
 </body>
 </html>

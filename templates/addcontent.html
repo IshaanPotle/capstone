@@ -122,10 +122,7 @@
     </style>
 </head>
 <body>
-    
     {% include 'navbar.html'%}
-
-    {% block content %}
     <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
         <div class="container">
             <div class="row align-items-center">
@@ -133,101 +130,47 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
+
                             <li class="breadcrumb-item active" aria-current="page">View Subject</li>
                         </ol>
                     </nav>
-                    <h2 class="text-white">Subjects Listing</h2>
+
+                    <h2 class="text-white">Search and Add more content</h2>
                 </div>
+
             </div>
         </div>
     </section>
     
-    <div class="text-container">
-        <div class="toc" id="toc">
-            <h3>Table of Contents</h3>
-            <ul id="toc-list"></ul>
+<!-- Search Bar -->
+<div class="container mt-4 mb-4"> <!-- Added margin top and bottom -->
+    <form action="/addcontent" method="GET">
+        <div class="row">
+            <div class="col-md-10"> <!-- Increased the size of the search bar -->
+                <input type="text" name="topic" class="form-control form-control-lg" placeholder="Search...">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-lg">Search</button> <!-- Increased the size of the button -->
+            </div>
         </div>
-        
-        <script>
-            // Function to extract headings and create table of contents
-            function generateTableOfContents() {
-                // Get all headings in the text content
-                var headings = document.querySelectorAll('.text-content h1, .text-content h2, .text-content h3, .text-content h4, .text-content h5, .text-content h6');
-                
-                // Get the table of contents list element
-                var tocList = document.getElementById('toc-list');
-                
-                // Loop through each heading and create a link in the table of contents
-                headings.forEach(function(heading) {
-                    // Get the text and ID of the heading
-                    var headingText = heading.textContent;
-                    var headingId = heading.getAttribute('id');
-                    
-                    // Create a list item with a link to the heading
-                    var listItem = document.createElement('li');
-                    var link = document.createElement('a');
-                    link.textContent = headingText;
-                    link.setAttribute('href', '#' + headingId);
-                    listItem.appendChild(link);
-                    
-                    // Add the list item to the table of contents list
-                    tocList.appendChild(listItem);
-                });
-            }  
-            // Call the function to generate table of contents when the page loads
-            window.onload = function() {
-                generateTableOfContents();
-            };
-        </script>
-    </div>
-    
-    <div class="text-container">
-        <div class="text-content" id="text-content">
-            {% if textual_content %}
-                {{ textual_content | safe }}
-                <!-- Radio Button for Student -->
-                {% if role == 'Student' %}
-                <form action="/submit_reading_status" method="POST">
-                    <input type="hidden" name="student_id" value="{{ session.id }}">
-                    <input type="hidden" name="text_id" value="{{ textual_content_id }}">
-                    <input type="submit" value="I have read this content">
-                </form>
-                {% endif %}
-                <!-- Display approval status -->
-                {% if approved %}
-                <p>Content is approved</p>
-                {% else %}
-                <!-- Approval Button for Teacher -->
-                {% if role == 'Teacher' %}
-                {% endif %}
-                {% endif %}
-            {% else %}
-                <div class="loading-spinner">
-                    <!-- Add your loading animation or spinner here -->
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+    </form>
+</div>
+
+<div class="container">
+    {% if results %}
+        <div class="card-container">
+            {% for result in results %}
+            <div class="card mt-3" style="width: 70rem;"> <!-- Adjusted width of the card -->
+                <div class="card-body">
+                    <h5 class="card-title"><a href="/articles?id={{ result.result_id }}&topic={{ topic }}">{{ result.title }}</a></h5>
+                    <p class="card-text">{{ result.description }}</p>
                 </div>
-            {% endif %}
+            </div>
+            {% endfor %}
         </div>
-    </div>
-    
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        function approveContent(textualContentId) {
-            $.post('/approve_content', { textual_content_id: textualContentId }, function(data) {
-                if (data === 'Content approved successfully') {
-                    // Update button text
-                    $('button').text('Content Approved');
-                    // Optionally, you can disable the button after approval
-                    $('button').prop('disabled', true);
-                }
-            });
-        }
-    </script>
-    {% endblock %}
-    
+    {% else %}
+    {% endif %}
+
 
     <!-- Footer -->
     <footer class="site-footer section-padding">

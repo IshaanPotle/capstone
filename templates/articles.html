@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scraped Article Content</title>
+    <style>
+        .container {
+            margin-top: 20px; /* Add margin above the container */
+        }
+    
+        h2 {
+            margin-top: 20px; /* Add margin after every h2 tag */
+            margin-bottom: 40px; /* Add margin before every h2 tag */
+        }
+    .custom-column {
+        border: 5px solid #ccc;
+        
+    }
+</style>
 </head>
 <body>
     <!-- Include navigation bar -->
@@ -16,33 +30,61 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="index.html">Homepage</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">View Articles</li>
                         </ol>
                     </nav>
-                    <h2 class="text-white">Articles to Read</h2>
+                    <h2 class="text-white">Learn Effectively</h2>
                 </div>
             </div>
         </div>
     </section>
 
-    <div class="container">
-        <!-- Loop through each item in the article content -->
-        {% for index, item in article_content %}
-            {% if item['type'] == 'h2' %}
-                <!-- Display content within h2 tags with different styling -->
-                <h2 style="font-size: 60px; {% if item.get('bold') %}font-weight: bold;{% endif %}">{{ item['content'] }}</h2>
-            {% elif item['type'] == 'text' %}
-                <!-- Increase font size for text content -->
-                <div style="font-size: 18px;">{{ item['content'] }}</div>
-            {% elif item['type'] == 'image' %}
-                <div>
-                    <img src="{{ item['url'] }}" alt="Image">
-                    {% if item['credit'] %}
-                        <p>{{ item['credit'] }}</p>
-                    {% endif %}
+    <div class="container-fluid bg-light p-5">
+        <h6>Our suggestion: We recommend reading an article</h6>
+    </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 custom-column">
+                <!-- Left column content (Article Content) -->
+                <div class="container">
+                    <!-- Loop through each item in the article content -->
+                    {% for index, item in article_content %}
+                        {% if item['type'] == 'h2' %}
+                            <!-- Display content within h2 tags with different styling -->
+                            <h2 style="font-size: 30px; {% if item.get('bold') %}font-weight: bold;{% endif %}">{{ item['content'] }}</h2>
+                        {% elif item['type'] == 'text' %}
+                            <!-- Increase font size for text content -->
+                            <div style="font-size: 18px;">{{ item['content'] }}</div>
+                        {% elif item['type'] == 'image' %}
+                            <div>
+                                <img src="{{ item['url'] }}" alt="Image">
+                                {% if item['credit'] %}
+                                    <p>{{ item['credit'] }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-            {% endif %}
-        {% endfor %}
+            </div>
+            <div class="col-md-6">
+                <!-- Right column content (Add any content here) -->
+                <div class="row">
+                    <div class="col-md-12 custom-column">
+                        <!-- Upper part of the right column -->
+                        <!-- Add content here -->
+                        <h2>Video</h2>
+                        <iframe width="100%" height="600" src="https://www.youtube.com/embed/24YMQ9GvLss?si=LGZw_dnwDf31WA-S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            
+                    <div class="col-md-12 custom-column">
+                        <!-- Lower part of the right column -->
+                        <!-- Add content here -->
+                        <h2>Attempt a Test</h2>
+                    </div>
+                
+            </div>
+        </div>
     </div>
 </body>
 </html>

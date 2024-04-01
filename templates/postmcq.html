@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Pre-Mcq Test</title>
+        <title>Post-Mcq Test</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,15 +24,6 @@
         <h2>Results</h2>
         <p>Your Score is: {{ matched_items }}</p>
         <p>Your Level is: {{ level }}</p>
-        <p>Recommendation: 
-            {% if level == '1' %}
-                Read an article.
-            {% elif level == '2' %}
-                Watch a video.
-            {% elif level == '3' %}
-                Take MCQ Test.
-            {% endif %}
-        </p>
         <button class="btn-ok" onclick="redirectToSubjects()">OK</button>
     </div>
 
@@ -51,11 +42,10 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="/">Homepage</a></li>
 
-                                    <li class="breadcrumb-item active" aria-current="page">Pre-Study MCQ</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Post-Study MCQ</li>
                                 </ol>
                             </nav>
-
-                            <h2 class="text-white">Pre-Study MCQ</h2>
+                    <h2 class="text-white">Pre-Study MCQ</h2>
                         </div>
 
                     </div>
@@ -67,7 +57,7 @@
     <!-- <div class="timer" id="timer">10:00</div> -->
   </div>                      
 
-<form action="/checkAns" method="POST">
+<form action="/checkAns_postmcq" method="POST">
     <div id="mcq-container">
         {% for question in api_response.questions %}
         <div class="question-block">
@@ -271,8 +261,3 @@
 
     </body>
 </html>
-<script>
-    function redirectToSubjects() {
-        window.location.href = "/subjects";
-    }
-</script>

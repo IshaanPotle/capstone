@@ -42,6 +42,27 @@
             color: #FFF;
             cursor: pointer;
         }
+        .card {           
+                top: 10%; 
+                border-radius: 10px; /* Add rounded corners */
+                border: none; /* Remove border */
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+                transition: box-shadow 0.3s ease; /* Add transition for hover effect */
+               
+            }
+            .card:hover {
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Change shadow on hover */
+            }
+            .card-body {
+                padding: 20px;
+               
+            }
+            .card-title {
+                font-size: 20px; /* Increase font size */
+                margin-top: 30px;
+            }
+           
+
     </style>
 </head>
 <body>
@@ -68,29 +89,98 @@
     </section>
     <div class="container" style="padding-top: 20px;">
         <ul class="list-unstyled row">
-            {% if subtopics %}
-                {% for subtopic in subtopics %}
+            
+            <div class="container" style="padding-top: 20px;">
+                <ul class="list-unstyled row">
+                    <!-- Display suggestion based on SubjectLevel -->
+                    {% if subject_level is defined %}
+                        {% if subject_level == 1 %}
+                            <h5>Our suggestion is that you have to read articles only.</h5>
+                        {% elif subject_level == 2 %}
+                            <h5>Our suggestion is that you can read articles or view videos.</h5>
+                        {% elif subject_level == 3 %}
+                            <h5>Our suggestion is that you take PostMCQ.</h5>
+                        {% else %}
+                            <h5>Our suggestion is that you attempt PreMCQ first to view the recommendation.</h5>
+                        {% endif %}
+                    {% else %}
+                        <h5>Subject level information is not available.</h5>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <div class="container" style="padding-top: 20px;">
+                <ul class="list-unstyled row">
+                    {% if subtopics %}
+                        {% for subtopic in subtopics %}
+                            <li class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ subtopic.Subtopics }}</h5>
+                                        {% if user.role == 'Teacher' %}
+                                            <form action="/textualcontent" method="POST">
+                                                <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
+                                            </form>
+                                            <form action="/videocontent" method="POST">
+                                                <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                <button type="submit" class="btn btn-primary btn-video" style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
+                                            </form>
+                                        {%endif%}
+                                        {% if subject_level is defined %}
+                                            {% if subject_level == 1 %}
+                                                <form action="/textualcontent" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
+                                                </form>
+                                            {% elif subject_level == 2 %}
+                                                <form action="/textualcontent" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
+                                                </form>
+                                                <form action="/videocontent" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-video" style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
+                                                </form>
+                                            {% elif subject_level == 3 %}
+                                                <form action="/textualcontent" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
+                                                </form>
+                                                <form action="/videocontent" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-video"style="background-color: #80d0c7; border-color: #80d0c7;"">View Video</button>
+                                                </form>
+                                                <form action="/mcq" method="POST">
+                                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
+                                                    <button type="submit" class="btn btn-primary btn-mcq" style="background-color: #80d0c7; border-color: #80d0c7;">Take MCQ</button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li>No subtopics found</li>
+                    {% endif %}
                     <li class="col-md-6 mb-3">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">{{ subtopic.Subtopics }}</h5>
-                                <form action="/textualcontent" method="POST">
-                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                    <button type="submit" class="btn btn-primary btn-article">Search Articles</button>
-                                </form>                                
-                                <form action="/videocontent" method="POST">
-                                    <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                    <button type="submit" class="btn btn-primary btn-video">View Videos</button>
+                                <h5 class="card-title">Add Content</h5>
+                                <form action="/addcontent" method="POST">
+                                    <button type="submit" class="btn btn-success">Add</button>
                                 </form>
                             </div>
                         </div>
                     </li>
-                {% endfor %}
-            {% else %}
-                <li>No subtopics found</li>
-            {% endif %}
-        </ul>
-    </div>
+                    
+                </ul>
+            </div>
+    
+    
+    
     
     <footer class="site-footer section-padding">
         <div class="container">
@@ -165,3 +255,20 @@
     </footer>
 </body>
 </html>
+<script>
+     document.getElementById('startMCQBtn').addEventListener('click', function() {
+                    $('#rulesPopup').modal('show');
+                });
+
+                document.getElementById('startQuizBtn').addEventListener('click', function() {
+                    $('#mcqForm').submit();
+                });
+
+                document.getElementById('cancelBtn').addEventListener('click', function() {
+                    $('#rulesPopup').modal('hide');
+                });
+
+                $('#rulesPopup').on('hide.bs.modal', function (e) {
+                    $('#startMCQBtn').blur(); 
+                });
+</script>

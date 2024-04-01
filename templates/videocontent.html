@@ -82,16 +82,27 @@
             </div>
         </div>
     </section>
+    <form action="/submit_reading_status" method="POST">
+        <input type="hidden" name="student_id" value="{{ session.id }}">
+        <input type="hidden" name="video_content_id" value="{{ video_content_id }}">
+        {% if role == 'Student' %}
+            <input type="submit" value="I have watched this video">
+        {% elif role == 'Teacher' %}
+            <button type="submit">Approve Video Content</button>
+        {% endif %}
+    </form>
 
-<div class="iframe-container">
-    {% if iframe_url %}
-        <iframe id="video-frame" src="{{ iframe_url }}" frameborder="0" allowfullscreen></iframe>
-    {% else %}
-        <p>No content found for this subject.</p>
-    {% endif %}
-
-</div>
-
+    <div class="iframe-container">
+        {% if iframe_url %}
+            <iframe id="video-frame" src="{{ iframe_url }}" frameborder="0" allowfullscreen></iframe>
+            <!-- Form for submitting reading status -->
+            
+            <p>No content found for this subject.</p>
+        {% endif %}
+    </div>
+    
+    
+    
 <div>
     <h3>Transcript</h3>
     <div id="transcript">
