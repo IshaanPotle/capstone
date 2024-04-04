@@ -49,6 +49,9 @@
             width: 100%; /* Make button full width */
             margin-top: 30px;
         }
+        html, body {
+    overflow-x: hidden;
+    }
       
     </style>
 </head>
@@ -60,9 +63,9 @@
                 <div class="col-lg-5 col-12">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="/subjects"></a>Subjects</li> <!--FIX LATER-->
+                            <li class="breadcrumb-item"><a href="{{ url_for('subjects') }}" style="cursor: pointer;"></a>Subjects</li> <!--FIX LATER-->
 
-                            <li class="breadcrumb-item active" aria-current="page">View Chapter</li>
+                            <li class="breadcrumb-item active" aria-current="page">View {{selected_subject}}</li>
                         </ol>
                     </nav>
 
@@ -74,46 +77,46 @@
     </section>
 <br>
 <ul class="list-unstyled row">
-    <h5 style="margin-left: 75px;">Start with Chapter: 
+    <h5 style="margin-left: 75px;">
     {% if selected_subject == 'Biology' %}
         {% if subject_level == 1 %}
-            <li>Basic Biology & Subtopic 'Cells'</li>
+            <li>Start with Chapter: Basic Biology & Subtopic 'Cells'</li>
         {% elif subject_level == 2 %}
-            <li>Plant Physiology & Subtopic 'Respiration in plants'</li>
+            <li>Start with Chapter: Plant Physiology & Subtopic 'Respiration in plants'</li>
         {% elif subject_level == 3 %}
-            <li>Quiz of SubTopic 'Cells' in Basic Biology</li>  
+            <li>Start with Chapter: Quiz of SubTopic 'Cells' in Basic Biology</li>  
         {% endif %}
     {% elif selected_subject == 'English' %}
         {% if subject_level == 1 %}
-            <li>Grammar and Syntax & Subtopic 'Syntax'</li>
+            <li>Start with Chapter:  Grammar and Syntax & Subtopic 'Syntax'</li>
         {% elif subject_level == 2 %}
-            <li>Comprehension & Subtopic 'Comprehension and what it means'</li>
+            <li>Start with Chapter: Comprehension & Subtopic 'Comprehension and what it means'</li>
         {% elif subject_level == 3 %}
-            <li>Quiz of Subtopic 'Syntax' in Grammar and Syntax</li>
+            <li>Start with Chapter: Quiz of Subtopic 'Syntax' in Grammar and Syntax</li>
         {% endif %}
     {% elif selected_subject == 'Social Sciences' %}
         {% if subject_level == 1 %}
-            <li>Our Constitution & Subtopic 'Constitution and its Significance'</li>
+            <li>Start with Chapter: Our Constitution & Subtopic 'Constitution and its Significance'</li>
         {% elif subject_level == 2 %}
-            <li>Elections & Subtopic 'Elections and their scopes'</li>
+            <li>Start with Chapter: Elections & Subtopic 'Elections and their scopes'</li>
         {% elif subject_level == 3 %}
-            <li>Quiz of Subtopic 'Elections and their scopes' in Elections</li>
+            <li>Start with Chapter: Quiz of Subtopic 'Elections and their scopes' in Elections</li>
         {% endif %}
     {% elif selected_subject == 'Chemistry' %}
         {% if subject_level == 1 %}
-            <li>Basic Chemistry & Subtopic 'Atomic Structure'</li>
+            <li>Start with Chapter: Basic Chemistry & Subtopic 'Atomic Structure'</li>
         {% elif subject_level == 2 %}
-            <li>Chemical Reactions & Subtopic 'Types of Chemical Reactions'</li>
+            <li>Start with Chapter: Chemical Reactions & Subtopic 'Types of Chemical Reactions'</li>
         {% elif subject_level == 3 %}
-            <li>Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions</li>
+            <li>Start with Chapter: Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions</li>
         {% endif %}
     {% elif selected_subject == 'Physics' %}
         {% if subject_level == 1 %}
-            <li>Basic Physics & Subtopic 'Mechanics'</li>
+            <li>Start with Chapter: Basic Physics & Subtopic 'Mechanics'</li>
         {% elif subject_level == 2 %}
-            <li>Electromagnetism & Subtopic 'Electromagnetic Induction'</li>
+            <li>Start with Chapter: Electromagnetism & Subtopic 'Electromagnetic Induction'</li>
         {% elif subject_level == 3 %}
-            <li>Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism</li>
+            <li>Start with Chapter: Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism</li>
         {% endif %}
     {% endif %}
 </h5>

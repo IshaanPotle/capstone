@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Progress Report</title>
+    
+    <!-- CSS FILES -->        
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% include 'navbar.html'%}
+    <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" style="cursor: pointer;"></a>Homepage</li> <!--FIX LATER-->
+
+                            <li class="breadcrumb-item active" aria-current="page">Viewing</li>
+                        </ol>
+                    </nav>
+
+                    <h2 class="text-white">Progress</h2>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <table style="width: 100%;">
+        <tr>
+            <th style="width: 50%;">
+                <div class="select-row">
+                    <div class="select-container">
+                        <label for="subjectSelect">Select Subject:</label>
+                        <select id="subjectSelect" onchange="updateTopics()">
+                            <option value="">Select Subject</option>
+                            {% for subject in subjects_list %}
+                                <option value="{{ subject.Subject }}">{{ subject.Subject }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="select-container">
+                        <label for="topicSelect">Select Topic:</label>
+                        <select id="topicSelect" onchange="updateGraphs()">
+                            <option value="">Select Topic</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </th>
+            <th>
+                 <div class="prog">
+                     <canvas id="progressChart"></canvas>
+                </div>
+            </th>
+        </tr>
+        <tr>
+            <td>
+  <div class = "chartTopicLevel">
+        <canvas id="topicLevelChart" ></canvas>
+    </div>
+            </td>
+            <td>
+ <div class="chartTopicScore">
+        <canvas id="topicScoreChart"></canvas>
+    </div>  
+
+            </td>
+        </tr>
+    </table>
+
+    <!-- Placeholder for the chart -->
+   
+
+
+  
+
+   
+
+    
+    <style type="text/css">
+        .select-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .select-container {
+            flex: 1;        
+            margin-right: 10px;
+        }
+        
+        /* Optional: Adjust styling as needed */
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select {
+            width: 100%;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }      
+       
+        #progressChart{
+            border-radius: 10px; /* Adjust border radius as needed */
+            background-color: #ffffff; /* Card background color */
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Box shadow */
+            padding: 20px; /* Padding inside the card */
+            height: 500px;
+        }
+
+        .breadcrumb-item {display: inline-block;
+            color: #13547a;
+            text-decoration: none;
+        }
+        .breadcrumb-item:hover {
+            color: #FFF;
+            cursor: pointer;
+        }
+        #topicSelect{
+            width: 300px;
+        }
+        .chartBox{
+            width: 500px;
+            padding: 20px;
+        }
+      
+        .chartTopicScore{
+            width: 500px;
+            padding: 20px;
+        }
+        .prog{
+            width: 90%;
+            padding: 20px;
+        }
+        .chartTopicLevel{
+            width: 500px;
+            padding: 20px;
+        }
+    </style>
+
+    <!-- JavaScript to render the chart -->
+    <script>
+        // Data from Flask
+        const subjectsList = {{ subjects_list | tojson }};
+        const userSubjectLevelsList = {{ user_subject_levels_list | tojson }};
+        var userTopicsLevelsList = []; // Initialize to empty array
+        
+        // Prepare data for chart
+        const labels = subjectsList.map(subject => subject.Subject);
+        const data = subjectsList.map(subject => {
+            const userSubjectLevel = userSubjectLevelsList.find(item => item.Subject === subject.Subject);
+            return userSubjectLevel ? userSubjectLevel.SubjectLevel : null;
+        });
+
+        // Remove null values from data array
+        const filteredData = data.filter(level => level !== null);
+        const colors = ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(255, 206, 86, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'];
+        const borderColors = ['rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
+        // Chart creation
+        const cto = document.getElementById('progressChart').getContext('2d');
+        const progressChart = new Chart(cto, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Subject Level',
+                    data: filteredData,
+                    backgroundColor: colors,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        
+    </script>
+
+<script>
+    var ct = document.getElementById('myChart').getContext('2d');
+    var myChart;
+    
+    function updateTopics() {
+        var subject = document.getElementById("subjectSelect").value;
+        var topics = [];
+        {% for item in topics_list %}
+            if ("{{ item.Subject }}" === subject) {
+                topics.push("{{ item.Subtopics|join('')|replace("'", "\\'") }}"); // Join the topic names with a separator and replace quotes
+            }
+        {% endfor %}
+        
+        var topicSelect = document.getElementById("topicSelect");
+        // Clear existing options
+        topicSelect.innerHTML = "<option value=''>Select Topic</option>";
+        // Add topics to the dropdown
+        topics.forEach(function(topic) {
+            var option = document.createElement("option");
+            option.text = topic;
+            option.value = topic;
+            topicSelect.appendChild(option);
+        });
+
+        // Retrieve data for selected subject and update userTopicsLevelsList
+        userTopicsLevelsList = {{ user_topics_levels_list | tojson }};
+    }
+    
+    function updateGraphs() {
+        var selectedTopic = document.getElementById("topicSelect").value;
+        var filteredData = userTopicsLevelsList.filter(function(item) {
+            return item.Topic === selectedTopic;
+        });
+       
+        var topicLevelData = filteredData.map(function(item) {
+            return item.TopicLevel;
+        });
+
+        var topicScoreData = filteredData.map(function(item) {
+            return item.TopicScore;
+        });
+        console.log(selectedTopic,topicLevelData)
+        drawBarGraph("topicLevelChart", selectedTopic + " - Level", topicLevelData);
+        drawLineGraph("topicScoreChart", selectedTopic + " - Score", topicScoreData);
+    }
+
+    function drawBarGraph(canvasId, label, data) {
+        var ctx = document.getElementById(canvasId).getContext('2d');
+        // Destroy existing chart instance if it exists
+        if (window[canvasId + '_chart']) {
+            window[canvasId + '_chart'].destroy();
+        }
+        window[canvasId + '_chart']  = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map((_, i) => 'Item ' + (i + 1)),
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    function drawLineGraph(canvasId, label, data) {
+        var ctx = document.getElementById(canvasId).getContext('2d');
+        // Destroy existing chart instance if it exists
+        if (window[canvasId + '_chart']) {
+            window[canvasId + '_chart'].destroy();
+        }
+        window[canvasId + '_chart']  = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map((_, i) => 'Item ' + (i + 1)),
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
+    // Ensure that the graphs are updated when the page loads
+    updateTopics();
+</script>
+
+</body>
+</html>

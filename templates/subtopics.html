@@ -61,6 +61,18 @@
                 font-size: 20px; /* Increase font size */
                 margin-top: 30px;
             }
+            .btn-primary2 {
+                background-color: #13547A;
+                border-color: #13547A;  
+                color: #ffffff; /* Text color when not hovering */
+            }
+
+            .btn-primary2:hover {
+                background-color: #80d0c7;
+                border-color: #80d0c7;
+                color: #ffffff; /* Text color when hovering */
+                cursor: pointer;
+            }
            
 
     </style>
@@ -77,11 +89,11 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/chapters">Chapter</a></li>
 
-                            <li class="breadcrumb-item active" aria-current="page">View Subject</li>
+                            <li class="breadcrumb-item active" aria-current="page">View {{ selected_subject }}</li>
                         </ol>
                     </nav>
 
-                    <h2 class="text-white">Subjects Listing</h2>
+                    <h2 class="text-white">Topics Listing</h2>
                 </div>
 
             </div>
@@ -95,7 +107,7 @@
                     <!-- Display suggestion based on SubjectLevel -->
                     {% if subject_level is defined %}
                         {% if subject_level == 1 %}
-                            <h5>Our suggestion is that you have to read articles only.</h5>
+                            <h5>Our suggestion is that you have to view video only.</h5>
                         {% elif subject_level == 2 %}
                             <h5>Our suggestion is that you can read articles or view videos.</h5>
                         {% elif subject_level == 3 %}
@@ -128,12 +140,22 @@
                                             </form>
                                         {%endif%}
                                         {% if subject_level is defined %}
+                                        {% if read_status_dt is defined %}
+
                                             {% if subject_level == 1 %}
-                                                <form action="/textualcontent" method="POST">
+                                                <form action="/videocontent" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                                    <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
+                                                    <button type="submit" class="btn btn-primary btn-video" style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
                                                 </form>
-                                            {% elif subject_level == 2 %}
+                                                {% if read_status.get(subtopic.Subtopics) %}
+                                                    {% if read_status[subtopic.Subtopics] == True %}
+                                                        <form action="/videocontent" method="POST">
+                                                            <input type="hidden" name="subject" value="{{ subtopic }}">
+                                                            <button type="submit" class="btn btn-primary btn-video" style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
+                                                        </form>
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% elif subject_level == 2 %}
                                                 <form action="/textualcontent" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
                                                     <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Article</button>
@@ -141,7 +163,15 @@
                                                 <form action="/videocontent" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
                                                     <button type="submit" class="btn btn-primary btn-video" style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
-                                                </form>
+                                                </form>  
+                                                {% if read_status_dt.get(subtopic.Subtopics) %}
+                                                    {% if read_status_dt[subtopic.Subtopics] == True %}
+                                                    <form id="mcqForm" action="/takemcq_subtopics" method="POST">
+                                                        <input type="hidden" name="subject" value="{{ subtopic }}">
+                                                        <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Take MCQ</button>
+                                                    </form>
+                                                    {% endif %}
+                                                {% endif %}                                            
                                             {% elif subject_level == 3 %}
                                                 <form action="/textualcontent" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
@@ -149,14 +179,15 @@
                                                 </form>
                                                 <form action="/videocontent" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                                    <button type="submit" class="btn btn-primary btn-video"style="background-color: #80d0c7; border-color: #80d0c7;"">View Video</button>
+                                                    <button type="submit" class="btn btn-primary btn-video"style="background-color: #80d0c7; border-color: #80d0c7;">View Video</button>
                                                 </form>
-                                                <form action="/mcq" method="POST">
+                                                <form id="mcqForm" action="/takemcq_subtopics" method="POST">
                                                     <input type="hidden" name="subject" value="{{ subtopic.Subtopics }}">
-                                                    <button type="submit" class="btn btn-primary btn-mcq" style="background-color: #80d0c7; border-color: #80d0c7;">Take MCQ</button>
+                                                    <button type="submit" class="btn btn-primary btn-article" style="background-color: #80d0c7; border-color: #80d0c7;">Take MCQ</button>
                                                 </form>
                                             {% endif %}
                                         {% endif %}
+                                    {% endif %}
                                     </div>
                                 </div>
                                 
@@ -183,7 +214,30 @@
             </div>
     
     
-    
+            <div id="rulesPopup" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"  style="text-align: center; width: 100%;">Rules and Regulations</h5>                            
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <ul>
+                                <li style="font-size: 16px; ">Make sure that you write your name and student ID correctly. Otherwise, the system can't record your grades.</li>
+                                <li style="font-size: 16px; ">The given time for this quiz is 10 minutes. After that, the form will be closed for you.</li>
+                                <li style="font-size: 16px; ">Students who will not submit their answers in time will receive 0.</li>
+                                <li style="font-size: 16px; ">You can only submit your answers once. If you wish to pause the quiz, please use the Save and Continue Later button.</li>
+                                <li style="font-size: 16px; ">Each question has its own grading points. After you submit your answers, we will evaluate them and let you know your grades later.</li>
+                                <li style="font-size: 16px; ">If you have any technical problem during the quiz, please take a screenshot or screen recording and send it to us.</li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer d-flex ">
+                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                            <button type="button" id="startQuizBtn" class="btn btn-primary2">Start</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
     
     <footer class="site-footer section-padding">
         <div class="container">

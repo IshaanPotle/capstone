@@ -56,7 +56,7 @@ class AdaptiveLearningModel:
                 return level
         
         # Default to beginner if score doesn't meet any thresholds
-        return 'beginner'
+        return '1'
 
     def train(self, user_id, subject, mcq_score, action, reward, next_mcq_score, next_action, topic):
         self.update_q_table(subject, mcq_score, action, reward, next_mcq_score, next_action, topic)

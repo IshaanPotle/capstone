@@ -72,7 +72,10 @@
                     <div class="col-md-12 custom-column">
                         <!-- Upper part of the right column -->
                         <!-- Add content here -->
-                        <h2>Video</h2>
+                        <div class = "container">
+
+                            
+                        </div>
                         <iframe width="100%" height="600" src="https://www.youtube.com/embed/24YMQ9GvLss?si=LGZw_dnwDf31WA-S" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
@@ -81,10 +84,48 @@
                         <!-- Lower part of the right column -->
                         <!-- Add content here -->
                         <h2>Attempt a Test</h2>
+
                     </div>
                 
             </div>
         </div>
     </div>
+    <div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-10">
+                    <!-- Form for inserting content -->
+                    <form id="insertContentForm" method="post" action="/insert-content">
+                        <!-- Hidden input field to store article content -->
+                        <input type="hidden" id="articleContentInput" name="article_content">
+        
+                        <!-- Submit button -->
+                        <button type="button" id="insertContentButton" class="btn btn-primary btn-lg">Add Subtopic</button>
+                    </form>
+                </div>
+        </div>
+        
+    
+    <script>
+        // Function to submit article content to server
+        function insertContent() {
+            // Get article content
+            var articleContent = JSON.stringify({{ article_content | tojson }}); // Assuming article_content is a JSON object
+            
+            // Set article content to hidden input field
+            $('#articleContentInput').val(articleContent);
+    
+            // Submit form
+            $('#insertContentForm').submit();
+        }
+    
+        // Call insertContent function when the button is clicked
+        $(document).ready(function() {
+            $('#insertContentButton').click(function() {
+                insertContent();
+            });
+        });
+    </script>
+    
 </body>
 </html>

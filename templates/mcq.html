@@ -7,7 +7,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Topic Listing Page</title>
+        <title>MCQ</title>
 
         <!-- CSS FILES -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,101 +71,89 @@
             <center><h2>Subject Names</h2></center>
             <ul>                     
                 {% for subject in subjects %}
-                {% if user %}
-                <div class="col">
-                    <div class="card" style="margin-right: 20px;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ subject.Subject }}</h5>
-        
-                            {% if user.role == 'Student' %}
-                            <p style="font-size: 15px;">
-                                {% if user_levels.get(subject.Subject) %}
-                                Your Level: {{ user_levels[subject.Subject] }}
-                                {% else %}
-                                    You have not yet attempeted
-                                {% endif %}
-                            </p>
-                       
-                        
-                                <!-- Progress Bar Display -->
-                                <!-- <div class="progress-bar-container">
-                                    <div class="progress-bar" style="width: 70%;"></div>
-                                    <div class="progress-text">70%</div>
-                                </div> -->
-                                <!-- End Progress Bar Display -->                  
-                            
-                                <!-- Take MCQ Button -->
-                                <div style="display: flex">
-                                    <!-- Take MCQ Button -->
-                                    {% if not user_levels.get(subject.Subject) %}
-                                    <form id="mcqForm" action="/takemcq" method="POST" style="margin-right: 10px;">
-                                        <input type="hidden" name="subject" value="{{ subject.Subject }}">
-                                        <button type="button" id="startMCQBtn" class="btn btn-primary">Take MCQ</button>
-                                    </form>
-                                    {% endif %}
-                                    <!-- View Chapters Button -->
-                                    {% if user_levels.get(subject.Subject) %}
-                                    <form action="/chapters" method="POST" style="margin-bottom: 10px;">
-                                        <input type="hidden" name="Chapter" value="{{ subject.Subject }}">
-                                        <button type="submit" class="btn btn-primary">View Chapters</button>
-                                    </form>
-                                    {% endif %}
+                    {% if user %}
+                        <div class="col">
+                            <div class="card" style="margin-right: 20px;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ subject.Subject }}</h5>
+                                    {% if user.role == 'Student' %}                                        
+                                        <p style="font-size: 15px;">
+                                            {% if user_levels.get(subject.Subject) %}
+                                                Your Level: {{ user_levels[subject.Subject] }}                                                                                          
+                                            {% else %}
+                                                You have not yet attempted                                            
+                                            {% endif %}
+                                        </p>
+
+                                        <!-- DYNAMIC PROGRESS BAR -->
+                                        {% if progress.get(subject.Subject) %}
+                                        <div class="progress-container">
+                                            <div class="progress-bar" style="width: {{ progress[subject.Subject] *100 }}%;">
+                                              <span class="progress-text">{{ progress[subject.Subject]*100 }}%</span>
+                                            </div>
+                                          </div>
+                                        {% endif %}
+
+                                        <!-- Take MCQ Button -->
+                                        <div style="display: flex">
+                                            <!-- Initial form for Take MCQ -->
+                                            {% if not user_levels.get(subject.Subject) %}
+                                                <form action="/takemcq" method="POST" style="margin-right: 10px;">
+                                                    <input type="hidden" name="subject" value="{{ subject.Subject }}">
+                                                    <button type="submit" class="btn btn-primary" id="showRulesBtn">Take MCQ</button>
+                                                </form>
+                                            {% endif %}
+                                            <!-- View Chapters Button -->
+                                            {% if user_levels.get(subject.Subject) %}
+                                                <form action="/chapters" method="POST" style="margin-bottom: 10px;">
+                                                    <input type="hidden" name="Chapter" value="{{ subject.Subject }}">
+                                                    <button type="submit" class="btn btn-primary">View Chapters</button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                        <!-- End View Chapters Button -->
                                     {% endif %}
                                 </div>
-                            <!-- End View Chapters Button -->
-                            {% endif %}
+                            </div>
                         </div>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+                        <br>
+                    {% endif %}
                 {% endfor %}
-        
 
+        
+            </ul>
             
-            <div id="rulesPopup" class="modal" tabindex="-1" role="dialog">
+            <!-- Modal -->
+            <div class="modal fade" id="quizRulesModal" tabindex="-1" role="dialog" aria-labelledby="quizRulesModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title"  style="text-align: center; width: 100%;">Rules and Regulations</h5>                            
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <ul>
-                                <li style="font-size: 16px; ">Make sure that you write your name and student ID correctly. Otherwise, the system can't record your grades.</li>
-                                <li style="font-size: 16px; ">The given time for this quiz is 10 minutes. After that, the form will be closed for you.</li>
-                                <li style="font-size: 16px; ">Students who will not submit their answers in time will receive 0.</li>
-                                <li style="font-size: 16px; ">You can only submit your answers once. If you wish to pause the quiz, please use the Save and Continue Later button.</li>
-                                <li style="font-size: 16px; ">Each question has its own grading points. After you submit your answers, we will evaluate them and let you know your grades later.</li>
-                                <li style="font-size: 16px; ">If you have any technical problem during the quiz, please take a screenshot or screen recording and send it to us.</li>
-                            </ul>
-                        </div>
-                        <div class="modal-footer d-flex ">
-                            <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                            <button type="button" id="startQuizBtn" class="btn btn-primary2">Start</button>
-                        </div>
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="quizRulesModalLabel">Quiz Rules</h5>
+                    <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
                     </div>
+                    <div class="modal-body">
+                    <ul>
+                        <li style="font-size: 16px;">Make sure that you write your name and student ID correctly. Otherwise, the system can't record your grades.</li>
+                        <li style="font-size: 16px;">The given time for this quiz is 10 minutes. After that, the form will be closed for you.</li>
+                        <li style="font-size: 16px;">Students who will not submit their answers in time will receive 0.</li>
+                        <li style="font-size: 16px;">You can only submit your answers once. If you wish to pause the quiz, please use the Save and Continue Later button.</li>
+                        <li style="font-size: 16px;">Each question has its own grading points. After you submit your answers, we will evaluate them and let you know your grades later.</li>
+                        <li style="font-size: 16px;">If you have any technical problem during the quiz, please take a screenshot or screen recording and send it to us.</li>
+                    </ul>
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="startQuizBtn">Start</button>
+                    </div>
+                </div>
                 </div>
             </div>
             
             <script>
            
-            document.getElementById('startMCQBtn').addEventListener('click', function() {
-                    $('#rulesPopup').modal('show');
-                });
-
-                document.getElementById('startQuizBtn').addEventListener('click', function() {
-                    $('#mcqForm').submit();
-                });
-
-                document.getElementById('cancelBtn').addEventListener('click', function() {
-                    $('#rulesPopup').modal('hide');
-                });
-
-                $('#rulesPopup').on('hide.bs.modal', function (e) {
-                    $('#startMCQBtn').blur(); 
-                });
-                  </script>
+  </script>
             
     </ul>
 
@@ -208,52 +196,32 @@
     color: #ffffff; /* Text color when hovering */
     cursor: pointer;
 }
-
-  /* Progress bar container */
-  .progress-bar-container {
+/* progress bar */
+.progress-container {
     width: 100%;
-    background-color: #f0f0f0;
-    border-radius: 4px;
-    overflow: hidden;
     height: 20px;
-    margin-bottom: 10px; /* Added margin-bottom for spacing */
+    background-color: #f3f3f3;
+    border-radius: 10px;
+    margin-top: 10px;
   }
-
-  /* Progress bar */
-  .progress-bar-container {
-    width: 100%;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 20px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-  }
-
-
-  /* Progress bar */
+  
   .progress-bar {
     height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
     background: linear-gradient(to right, #FFC107, #FF9800, #FF5722, #E91E63, #9C27B0, #673AB7, #3F51B5); /* New set of gradient colors */
-    transition: width 0.5s ease-in-out;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1; /* Ensure the progress bar is above the text */
-    border-radius: 8px;
+    position: relative;
   }
-
-  /* Text for progress percentage */
+  
+ 
   .progress-text {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: #fff;
-    font-size: 14px;
     font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    z-index: 2;
   }
+  
+  
 </style>

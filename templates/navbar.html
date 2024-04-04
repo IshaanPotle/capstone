@@ -59,17 +59,18 @@
                             <li class="nav-item">
                                 <a class="nav-link click-scroll" href="{{ url_for('contact') }}">Contact</a>
                             </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
-
-                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="{{ url_for('topics_listing') }}">Topics Listing</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('getdatafrommysql') }}">Progress Report</a></li>
-                                </ul>
-                                
-                            </li>
-                        </ul>                    
+                            {% if user %}
+                                {% if user.role == 'Student' %}
+                                <li class="nav-item">
+                                    <a class="nav-link click-scroll" href="/progress_report">Progress</a>
+                                </li>
+                                {% elif user.role == 'Teacher' %}
+                                <li class="nav-item">
+                                    <a class="nav-link click-scroll" href="/student_report">Progress</a>
+                                </li>
+                                {% endif %}
+                            {% endif %}
+                        </ul>                       
 
                         <div class="ms-auto me-4">
                             <table class="navbar_table">
@@ -117,10 +118,34 @@
             <style>
 
 
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+
+button.navbar-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* Adjust as needed */
+    height: 40px; /* Adjust as needed */
+    border-radius: 50%; /* Ensures the button appears as a circle */
+    background-color: #fff; /* Adjust background color as needed */
+    border: none;
+    cursor: pointer;
+}
+
+button.navbar-icon .bi-box-arrow-right {
+    padding-left: 10px !important;
+    font-size: 24px; /* Adjust icon size as needed */
+    color: black; /* Adjust icon color as needed */
+}
+
 .user-info-container {
     display: flex !important;
     align-items: center !important;
-    height: 100% !important; /* Ensure the container takes up the full height of the cell */
+    height: 100% !important; 
 }
 
 .user-info {
@@ -138,14 +163,13 @@
 
 .student {
     background-color: yellow ;
-    color: black !important; 
+    color: black !important;
 }
 
 .teacher {
     background-color: darkred ;
     color: white ;
 }
-
 
 
 

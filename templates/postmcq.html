@@ -23,63 +23,62 @@
     <div class="popup">
         <h2>Results</h2>
         <p>Your Score is: {{ matched_items }}</p>
-        <p>Your Level is: {{ level }}</p>
-        <button class="btn-ok" onclick="redirectToSubjects()">OK</button>
-    </div>
-
+        <button class="btn-ok" onclick="redirectToSubjects()">OK</button>   
     {% else %}
-    <body class="topics-listing-page" id="top">
-        {% include 'navbar.html'%}
-        <main>     
+        <body class="topics-listing-page" id="top">
+            {% include 'navbar.html'%}
+            <main>     
 
 
-            <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
-                <div class="container">
-                    <div class="row align-items-center">
+                <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+                    <div class="container">
+                        <div class="row align-items-center">
 
-                        <div class="col-lg-5 col-12">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/">Homepage</a></li>
+                            <div class="col-lg-5 col-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a href="/">Homepage</a></li>
 
-                                    <li class="breadcrumb-item active" aria-current="page">Post-Study MCQ</li>
-                                </ol>
-                            </nav>
-                    <h2 class="text-white">Pre-Study MCQ</h2>
+                                        <li class="breadcrumb-item active" aria-current="page">Post-Study MCQ</li>
+                                    </ol>
+                                </nav>
+                        <h2 class="text-white">Post-Study MCQ</h2>
+                            </div>
+
                         </div>
-
                     </div>
-                </div>
-            </section>
+                </section>
 
-<div class="col-lg-12 col-12 text-center">
-    <h3 class="mb-4">MCQ</h3>
-    <!-- <div class="timer" id="timer">10:00</div> -->
-  </div>                      
+                <div class="mcq-timer-container">
+                    <h3 class="mcq-title">MCQ</h3>
+                    <div class="timer" id="timer">10:00</div>
+                </div>                            
 
-<form action="/checkAns_postmcq" method="POST">
-    <div id="mcq-container">
-        {% for question in api_response.questions %}
-        <div class="question-block">
-            <div class="question">
-                <h5><span style="color: red;">* </span> {{ question.question }}</h5>
-                <div class="options">
-                    {% for option in question.options %}
-                        <input type="radio" id="{{option}}" name="{{ question.question }}" value="{{ option }}" required>
-                        <label for="{{option}}">{{ option }}</label><br>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    <button id="submit-btn" type="submit">Submit</button>
-</form>
+
+                <form action="/checkAns_postmcq" method="POST" style="display: block; overflow-x: hidden;">
+                    <div id="mcq-container">
+                        {% for question in api_response.questions %}
+                        <div class="question-block">
+                            <div class="question">
+                                <h5><span style="color: red;">* </span> {{ question.question }}</h5>
+                                <div class="options">
+                                    {% for option in question.options %}
+                                        <input type="radio" id="{{option}}" name="{{ question.question }}" value="{{ option }}" required>
+                                        <label for="{{option}}">{{ option }}</label><br>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button id="submit-btn" type="submit">Submit</button>
+                </form>
+
 <div id="result"></div>
  {% endif%}
         </main>
         <style>
-     
+      
         .popup {
             position: fixed;
             top: 50%;
@@ -95,7 +94,8 @@
             text-align: center;
         }
         .btn-ok {
-            background-color: #007bff;
+            background-color: #13547A;
+            border-color: #13547A; 
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -104,18 +104,21 @@
             margin-top: 20px;
         }
         .btn-ok:hover {
-            background-color: #0056b3;
+            background-color: #80d0c7; 
+            border-color: #80d0c7; 
         }
   
             .question-block {
+                overflow-x: hidden;
                 background-color: #ffffff;
                 border: 1px solid #e0e0e0;
                 border-radius: 8px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 padding: 20px;
                 margin-bottom: 20px;
-                margin-left: 20px;
-                margin-right: 20px;
+                margin-left: 10%;
+                margin-right: 10%;
+                /* width: 100%; */
             }
             
             .question-block .question {                
@@ -151,107 +154,69 @@
               .options label {
                 margin-bottom: 5px;
               }
-              .timer {
-                margin-bottom: 40px ;
-                position: absolute;
-                right: 20px;
-                font-size: 18px;
-                color: #333;
-                padding: 5px 10px;
-                border-radius: 5px;
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-              }
-              #submit-btn {
-                margin-left: 30px;
-                background: #79c9c2;
-                border: none;
-                padding: 15px 25px; 
-                width: 155px;
-                font-size: 20px;
-                color: white;
-                border-radius: 5px;
-                font-weight: bold;
-                transition: background-color 0.3s ease; 
-                cursor: pointer; 
-              }
-            
-              #submit-btn:hover {
-                background-color: #5aa8a0;
-              }
-            </style>
-            
+  
+    .progress-container {
+        width: 300px; /* Adjust width as needed */
+        height: 20px;
+        position: relative;
+        border-radius: 10px;
+        border: 2px solid #333;
+        background-color: #f3f3f3;
+    }
+    .progress-bar {
+        width: 0%;
+        height: 100%;
+        background-color: #4caf50;
+        border-radius: 10px;
+        transition: width 1s ease;
+    }
+    .mcq-title {
+        margin: 0; /* Remove default margin */
+        text-align: center !important; /* Center the text horizontally */
+        flex-grow: 1 !important;
+        }
+        
+    .mcq-timer-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+                
+    .timer {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        padding: 5px 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        margin-right: 10px;
+    }
+           
+    
+    html, body {
+    overflow-x: hidden;
+    }
 
-		<footer class="site-footer section-padding">
-            <div class="container">
-                <div class="row">
+    #submit-btn{
+        width: 10%;
+        background-color: #13547A;
+        border-color: #13547A;   
+        color: #ffffff;
+        padding: 10px 10px; 
+        border-radius: 5px;
+        margin-left: 10%;
+    }
+    #submit-btn:hover{
+        background-color: #80d0c7; 
+        border-color: #80d0c7;  
+        color: #ffffff;
+        cursor: pointer;
+    }
+             
+       </style>          
 
-                    <div class="col-lg-3 col-12 mb-4 pb-2">
-                        <a class="navbar-brand mb-2" href="index.html">
-                            <i class="bi-back"></i>
-                            <span>Topic</span>
-                        </a>
-                    </div>
-
-                    <div class="col-lg-3 col-md-4 col-6">
-                        <h6 class="site-footer-title mb-3">Resources</h6>
-
-                        <ul class="site-footer-links">
-                            <li class="site-footer-link-item">
-                                <a href="#" class="site-footer-link">Home</a>
-                            </li>
-
-                            <li class="site-footer-link-item">
-                                <a href="#" class="site-footer-link">How it works</a>
-                            </li>
-
-                            <li class="site-footer-link-item">
-                                <a href="#" class="site-footer-link">FAQs</a>
-                            </li>
-
-                            <li class="site-footer-link-item">
-                                <a href="#" class="site-footer-link">Contact</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
-                        <h6 class="site-footer-title mb-3">Information</h6>
-
-                        <p class="text-white d-flex mb-1">
-                            <a href="tel: 305-240-9671" class="site-footer-link">
-                                305-240-9671
-                            </a>
-                        </p>
-
-                        <p class="text-white d-flex">
-                            <a href="mailto:info@company.com" class="site-footer-link">
-                                info@company.com
-                            </a>
-                        </p>
-                    </div>
-
-                    <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            English</button>
-
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" type="button">Thai</button></li>
-
-                                <li><button class="dropdown-item" type="button">Myanmar</button></li>
-
-                                <li><button class="dropdown-item" type="button">Arabic</button></li>
-                            </ul>
-                        </div>
-
-                        <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
-                        <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
-
-                    </div>
-
-                </div>
-            </div>
-        </footer>
 
         <!-- JAVASCRIPT FILES -->
         <script src="js/jquery.min.js"></script>
@@ -261,3 +226,30 @@
 
     </body>
 </html>
+
+<script>
+        countdownTime = 600; // 10 minutes in seconds
+
+
+// Start the countdown
+var timerInterval = setInterval(function() {
+    countdownTime--;
+    var minutes = Math.floor(countdownTime / 60);
+    var seconds = countdownTime % 60;
+    document.getElementById("timer").innerHTML = (minutes < 10 ? "0" : "") + minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    // Calculate progress
+    var progress = ((600 - countdownTime) / 600) * 100; // 600 seconds = 100%
+    document.getElementById("progress").style.height = progress + "%";
+
+    // Check if the countdown is finished
+    if (countdownTime <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById("timer").innerHTML = "Time's up!";
+    }  
+}, 1000); 
+
+function redirectToSubjects() {
+        window.location.href = "/subjects";
+    }
+</script>

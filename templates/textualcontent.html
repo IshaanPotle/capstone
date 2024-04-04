@@ -189,7 +189,7 @@
                 {% if role == 'Student' %}
                 <form action="/submit_reading_status" method="POST">
                     <input type="hidden" name="student_id" value="{{ session.id }}">
-                    <input type="hidden" name="text_id" value="{{ textual_content_id }}">
+                    <input type="hidden" name="text_id" value="{{ text_id }}">
                     <input type="submit" value="I have read this content">
                 </form>
                 {% endif %}

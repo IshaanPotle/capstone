@@ -1,3 +1,4 @@
+import email
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -95,13 +96,23 @@ def subjects():
 @app.route('/subtopics', methods=['GET','POST'])
 def subtopics():
     email = session.get('email')
-    selected_subject = session.get('selected_subject')
+    name = session.get('name')
+    selected_subject = session.get('selected_subject')  
+    text_id = session.get('text_id')
+    video_id = session.get('video_id')
     selected_chapter = None
     if request.method == 'POST':
         selected_chapter = request.form['subject']
         print(email)
         print(selected_chapter)
         print(selected_subject)
+        subtopics_data = []
+        read_status_list = []
+        watch_status_list = []
+        read_status = 0
+        watch_status = 0
+        read_status_dt = {}
+        watch_status_dt = {}
         # Connect to MySQL database
         connection = get_mysql_connection()
         if connection:
@@ -120,10 +131,63 @@ def subtopics():
                     subject_level_str = subject_level_result['SubjectLevel'] if subject_level_result and 'SubjectLevel' in subject_level_result else None
                     subject_level = int(subject_level_str) if subject_level_str is not None else None
                     print(subject_level)
+                    cursor.close()  
+
+                    cursor = connection.cursor(dictionary=True)
+                    # cursor.execute("""SELECT sub.Subtopics, s.read_status, s.watch_status FROM status AS s INNER JOIN subject AS sub ON s.text_id = sub.id WHERE s.student_name = %s """, (name,))
+                    cursor = connection.cursor(dictionary=True)
+                    # cursor.execute("""SELECT sub.Subtopics, s.read_status, s.watch_status FROM status AS s INNER JOIN subject AS sub ON s.text_id = sub.id WHERE s.student_name = %s """, (name,))
+                    cursor = connection.cursor(dictionary=True)
+                    cursor.execute("""
+                        SELECT sub.Subtopics, MAX(s.read_status) AS read_status, MAX(s.read_timestamp) AS read_timestamp
+                        FROM status AS s
+                        INNER JOIN subject AS sub ON s.text_id = sub.id
+                        WHERE s.student_name = %s
+                        GROUP BY sub.Subtopics
+                    """, (name,))
+                    read_status_data = cursor.fetchall()
+                    print("read_status_data",read_status_data)
+
+                    cursor.execute("""
+                        SELECT sub.Subtopics, MAX(s.watch_status) AS watch_status, MAX(s.watch_timestamp) AS watch_timestamp
+                        FROM status AS s
+                        INNER JOIN subject AS sub ON s.text_id = sub.id
+                        WHERE s.student_name = %s
+                        GROUP BY sub.Subtopics
+                    """, (name,))
+                    watch_status_data = cursor.fetchall()
+                    print("watch_status_data",watch_status_data)
+
+                    
                     cursor.close()
 
+                    session['Subject'] = selected_subject
+                    session['Chapter'] = selected_chapter
+             
+                    for read_status_row, watch_status_row in zip(read_status_data, watch_status_data):
+                        subtopic_data = read_status_row['Subtopics']
+                        read_status = bool(read_status_row['read_status'])
+                        watch_status = bool(watch_status_row['watch_status'])
+                        print("Subtopic:", subtopic_data)
+                        
+                        read_status_dt[read_status_row['Subtopics']] = read_status_row['read_status']
+                        watch_status_dt[watch_status_row['Subtopics']] = watch_status_row['watch_status']
+                        print("Subtopic:", subtopic_data)
+                        print("Read Status:", "Yes" if read_status else "No")
+                        print("Watch Status:", "Yes" if watch_status else "No")
+                        print("Read Status Dt", read_status_dt)
+                        print("Watch Status Dt", watch_status_dt)
+
+                        subtopics_data.append(subtopic_data)
+                        read_status_list.append("Yes" if read_status else "No")
+                        watch_status_list.append("Yes" if watch_status else "No")
+
+                        print("Read_Status", read_status)
+                        print("Type of Read", type(read_status))
+                    
+
                     connection.close()
-                    return render_template('subtopics.html', user=get_user_info(), subtopics=subtopics, subject_level=subject_level)
+                    return render_template('subtopics.html', user=get_user_info(), subtopics=subtopics, subject_level=subject_level, read_status=read_status, watch_status=watch_status, subtopics_data=subtopics_data, read_status_dt = read_status_dt, watch_status_dt = watch_status_dt)
                 else:
                     return "Email or selected subject not found. Please check your session."
             except Exception as e:
@@ -307,9 +371,69 @@ def videocontent():
         return render_template('videocontent.html', role=role)  # Pass None if it's a GET request
 
 
-@app.route('/progress_report')
+@app.route('/progress_report', methods=['GET'])
 def progress_report():
-    return render_template('progress_report.html')
+    email = session.get('email')
+    name = session.get('name')
+    role = session.get('role')
+    print('Role:', role )
+    students_list = {}
+    connection = get_mysql_connection()
+    cursor = connection.cursor(dictionary=True)
+       
+    # Query to retrieve subject names
+    cursor.execute("SELECT DISTINCT Subject FROM subject")
+    subjects_list= cursor.fetchall()
+
+    cursor.execute("SELECT Subject, Subtopics FROM subject")
+    topics_list= cursor.fetchall()
+
+    # Query to retireve 
+    query = "SELECT DISTINCT Subject, SubjectLevel FROM score WHERE email = %s"
+    cursor.execute(query, (email,))
+    user_subject_levels_list = cursor.fetchall()   
+
+    query = "SELECT DISTINCT Subject, Topic, TopicScore, TopicLevel, tries FROM score WHERE email = %s AND Topic IS NOT NULL AND Topic != '-' ;"
+    cursor.execute(query, (email,))
+    user_topics_levels_list = cursor.fetchall()    
+    
+    return render_template('dump.html',name=name, email=email, role=role, subjects_list = subjects_list, user_subject_levels_list = user_subject_levels_list,
+                          user_topics_levels_list = user_topics_levels_list, topics_list = topics_list, user=get_user_info())
+
+@app.route('/student_report', methods=['GET'])
+def progress_report_student():
+    email = session.get('email')
+    name = session.get('name')
+    role = session.get('role')
+    print('Role:', role )
+
+    connection = get_mysql_connection()
+    cursor = connection.cursor(dictionary=True)    
+  
+    # Query to retrieve subject names
+    cursor.execute("SELECT DISTINCT Subject FROM subject")
+    subjects_list= cursor.fetchall()
+
+    cursor.execute("SELECT Subject, Subtopics FROM subject")
+    topics_list= cursor.fetchall()
+
+    # Query to retireve 
+    query = "SELECT DISTINCT Subject, SubjectLevel, email FROM score"
+    cursor.execute(query)
+    user_subject_levels_list = cursor.fetchall()   
+
+    query = "SELECT DISTINCT Subject, Topic, TopicScore, TopicLevel, tries, email FROM score WHERE Topic IS NOT NULL AND Topic != '-' ;"
+    cursor.execute(query)
+    user_topics_levels_list = cursor.fetchall()    
+
+    query = "SELECT email, name FROM auth WHERE role ='Student';"
+    cursor.execute(query)
+    users_list = cursor.fetchall()
+    
+    return render_template('dump2.html',name=name, email=email, role=role, subjects_list = subjects_list, user_subject_levels_list = user_subject_levels_list,user_topics_levels_list = user_topics_levels_list, topics_list = topics_list, users_list = users_list, user=get_user_info())
+
+
+
 
 @app.route('/topics_listing')
 def topics_listing():
@@ -367,9 +491,11 @@ def mcq():
 
         # Inject user levels into template context
         user_levels = inject_user_level()['user_levels']
+    
+        progress = inject_user_topic_level()['progress']
 
         # Pass the subjects data and user levels to the template
-        return render_template('mcq.html', subjects=subjects1, user_levels=user_levels, user=get_user_info())
+        return render_template('mcq.html', subjects=subjects1, user_levels=user_levels, user=get_user_info(), progress= progress )
 
 @app.context_processor
 def inject_user_level():
@@ -399,12 +525,55 @@ def inject_user_level():
 
     return {'user_levels': user_levels}
 
-# ------------------------------------------------
+# INJECTING LIST OF TOPIC USER HAS DONE 
+@app.context_processor
+def inject_user_topic_level():
+    email = session.get('email')
+    user_topic_done = {}
+    total_topic ={}
+    progress = {}
 
+
+    if email:
+        connection = get_mysql_connection()
+        if connection:
+            try:
+                cursor = connection.cursor(dictionary=True)
+
+                # Query to retrieve user levels for each subject directly using email
+                query = "SELECT Subject, Topic, COUNT(Topic) AS Total_Subtopics_Done FROM score WHERE email = %s AND Topic IS NOT NULL AND Tries = 1 GROUP BY Subject, Topic"
+                cursor.execute(query, (email,))
+                user_levels_data = cursor.fetchall()
+
+                for row in user_levels_data:
+                    user_topic_done[row['Subject']] = row['Total_Subtopics_Done']
+
+                query = "SELECT Subject, COUNT(Subtopics) AS Total_Subtopics FROM subject GROUP BY Subject;"
+                cursor.execute(query)
+                total_subjects_topics = cursor.fetchall()
+
+                for i in total_subjects_topics:
+                    total_topic[i['Subject']] = i['Total_Subtopics']
+
+                for subs in user_topic_done:
+                    if subs in total_topic:
+                        progress[subs] = user_topic_done[subs] / total_topic[subs]
+
+
+            except Error as e:
+                print(f"Error executing MySQL query: {e}")
+
+            finally:
+                cursor.close()
+                connection.close()
+    return {'progress' : progress}
+
+# ------------------------------------------------
 @app.route('/takemcq', methods=['POST'])
 def subject_detail():
     # Get the subject name from the form submission
     subject_name = request.form['subject']
+    session['subject_name'] = subject_name
 
     # Connect to MySQL database
     connection = get_mysql_connection()
@@ -418,7 +587,7 @@ def subject_detail():
 
         # Extract subtopics strings from the result
         subtopic_list = [subtopic['Subtopics'] for subtopic in subtopics]
-
+        print(subtopic_list)
         # Pass the subtopics data to the API
         api_response = generate_pre_mcq(subtopic_list)
 
@@ -436,15 +605,14 @@ def subject_detail():
         for i in api_response['questions']:
             print(i['question'])
             questionList.append(i['question'])
-        return render_template('premcq.html', api_response=api_response ,notify = False)
+        return render_template('premcq.html', user=get_user_info(),api_response=api_response ,notify = False, subject_name = subject_name)
 
     else:
         return "Failed to establish MySQL connection. Please check your database settings."
 
-
-
 @app.route('/checkAns', methods=['POST'])
 def ans():
+    subject_name = session.get('subject_name')
     answerSelected = []
     for i in questionList:
         answerSelected.append(request.form[i])
@@ -458,11 +626,11 @@ def ans():
     cursor = connection.cursor(dictionary=True)
     level = '1'
     email = session['email']   
-    subject = subjects[0]
+    subject = subject_name
     score = matched_items
     if score < 3:
         pass
-    elif score >4 and score <8: 
+    elif score >=4 and score <=8: 
         level = '2'
     elif score >=9:
         level = '3'
@@ -475,41 +643,39 @@ def ans():
     cursor.close()
     connection.close()
 
-    return render_template('premcq.html', notify = True, matched_items = matched_items, level = level, subject =subject)
+    return render_template('premcq.html', notify = True, matched_items = matched_items, level = level, subject =subject, user=get_user_info())
 
 # FOR TOPIC 
 @app.route('/takemcq_subtopics', methods=['POST'])
-def subtopics_detail():
-        selected_chapter = request.form['subtopics']
-        # Connect to MySQL database
-        connection = get_mysql_connection()
-        if connection:
-            cursor = connection.cursor(dictionary=True)
-            cursor.execute("SELECT Subtopics FROM subject WHERE Chapter = %s", (selected_chapter,))
-            subtopics = cursor.fetchall()
-            cursor.close()
-            connection.close()
+def subtopics_detail():        
+        subtopic_name = request.form['subject']
+        session['subtopic_name'] = subtopic_name
+        print(subtopic_name)
+        
+        api_response = generate_pre_mcq(subtopic_name)
 
-            api_response = generate_pre_mcq(selected_chapter)
+        global answerList
+        answerList.clear()
+        # Saving the answers in the list
+        for i in api_response['questions']:
+            answerList.append(i['answer'])
+        print('PRE ANSWERS:',answerList)
+        global questionList
+        questionList.clear()
+        # Saving the questions in the list
+        for i in api_response['questions']:
+            print(i['question'])
+            questionList.append(i['question'])
+            
+        return render_template('postmcq.html', api_response=api_response ,notify = False,user=get_user_info())
 
-            global answerList
-            answerList.clear()
-            # Saving the answers in the list
-            for i in api_response['questions']:
-                answerList.append(i['answer'])
-
-            global questionList
-            questionList.clear()
-            # Saving the questions in the list
-            for i in api_response['questions']:
-                print(i['question'])
-                questionList.append(i['question'])
-            return render_template('subtopics.html', subtopics=subtopics)
-        else:
-            return "Failed to establish MySQL connection. Please check your database settings."
 
 @app.route('/checkAns_postmcq', methods=['POST'])
 def postmcq_ans():
+    # Retrieve the subject name from the session
+    # subject_name = session.get('subject_name')
+    subject_name = session.get('selected_subject')
+
     answerSelected = []
     for i in questionList:
         answerSelected.append(request.form[i])
@@ -517,38 +683,90 @@ def postmcq_ans():
     global answerList
     # Count the number of matched items
     matched_items = len(set(answerSelected) & set(answerList))
-
+    print(matched_items)
+    print('Answer Selected:', answerSelected)
+    print('Actual answers: ', answerList)
     # Update the score of the user for the selected topic
+    connection = get_mysql_connection()
     cursor = connection.cursor(dictionary=True)
     email = session['email']
-    subject = session['subject']   
-    subtopic = subtopic[0]  
-    score = matched_items
-    
+    print('Sub:', subject_name)
+    score = matched_items      
+    print('You have scored:',score)
+        # subtopic_name = request.form['subject']
+    print(request.form)
+    subtopic_name = session.get('subtopic_name')
+    print('TOP', subtopic_name)
+        
     # Retrieve the subject level from the score table
-    cursor.execute("SELECT SubjectLevel FROM score WHERE email = %s AND Subject = %s", (email, subject))
-    subject_level = cursor.fetchone()['SubjectLevel']
+    # Fetching subject level            
+    cursor.execute("SELECT DISTINCT SubjectLevel, SubjectScore FROM score WHERE email = %s AND Subject = %s", (email, subject_name))
+    subject_level_result = cursor.fetchone()
+    print(subject_level_result)
 
-    # Determine the topic level based on the score and subject level
+    subject_score_str = subject_level_result['SubjectScore'] if subject_level_result and 'SubjectScore' in subject_level_result else None
+    subject_score = int(subject_score_str) if subject_score_str is not None else None
+    print(subject_score)
+    subject_level_str = subject_level_result['SubjectLevel'] if subject_level_result and 'SubjectLevel' in subject_level_result else None
+    subject_level = int(subject_level_str) if subject_level_str is not None else None
+    print(subject_level)
+        # Determine the topic level based on the score and subject level
     if score < 3:
         topic_level = '1'
     elif score >= 3 and score < 8:
-        topic_level = '2'
+            topic_level = '2'
     elif score >= 8:
-        topic_level = '3'
+            topic_level = '3'  
+    print('Intial: ',topic_level)
 
-    # Update the score and increment tries
-    cursor.execute("INSERT INTO score (email, Subject, SubjectScore, Topic, TopicScore, SubjectLevel, TopicLevel, Tries) VALUES (%s, %s, %s, %s, %s, %s, %s, 1) ON DUPLICATE KEY UPDATE TopicScore = VALUES(TopicScore), TopicLevel = VALUES(TopicLevel), Tries = Tries + 1",
-                    (email, subject, 0, subtopic, score, subject_level, topic_level))  # Assuming it's the user's first try
-        
+    if topic_level <= str(subject_level):
+        if str(subject_level) == '3':
+                topic_level = '3'
+        elif  str(subject_level) == '2':
+                topic_level = '2'   
+    
+    if topic_level >= str(subject_level):            
+            if str(subject_level) == '1':
+                topic_level = '2'
+            elif  str(subject_level) == '2':
+                topic_level = '2'
+
+    print('Final: ',topic_level)
+
+    # Fetching the maximum tries value
+    cursor.execute("""
+        SELECT MAX(tries) AS max_tries 
+        FROM score 
+        WHERE email = %s AND Subject = %s AND Topic = %s
+    """, (email, subject_name, subtopic_name))
+    max_tries_result = cursor.fetchone()
+
+    # Incrementing the tries value or initializing with 1 if no existing record found
+    if max_tries_result is not None and max_tries_result['max_tries'] is not None:
+        max_tries = max_tries_result['max_tries']
+        new_tries = max_tries + 1
+    else:
+        new_tries = 1
+            
+    print('new try: ', new_tries)
+    # if new_tries <=5:
+            # Inserting the record with the new tries value
+  
+    cursor.execute("""
+                    INSERT INTO score (email, Subject, SubjectScore, Topic, TopicScore, SubjectLevel, TopicLevel, tries) 
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                """, (email, subject_name, subject_score, subtopic_name, score, subject_level, topic_level, new_tries))
+    
+ 
     connection.commit()
+    score = cursor.fetchall()
     cursor.close()
 
-    # Close the database connection
+                # Close the database connection
     connection.close()
 
-    # Redirect or render a response as needed
-    return redirect('postmcq.html') 
+        # Redirect or render a response as needed
+    return render_template('postmcq.html', notify = True, matched_items = matched_items, subject_level = subject_level, topic_level = topic_level, user=get_user_info()) 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -758,11 +976,51 @@ def show_article_content():
 @app.route('/addcontent', methods=['GET','POST'])
 def addcontent():
     topic = request.args.get('topic')
+    chapterdescription = request.args.get('chapterdescription')
+    subject = session.get('Subject')
+    subtopic = session['Subtopic'] = topic
+    chaptd = session['ChapterDescription'] = chapterdescription
+    print("Subject:", subject)
     if topic:
+        # Scrape articles
         articles = scrape_khan_academy_articles(topic)
-        return render_template('addcontent.html', results=articles, topic= topic)  # Pass topic to template
+        
+        return render_template('addcontent.html', results=articles, topic=topic, subject=subject, subtopic = subtopic)
     else:
-        return render_template('addcontent.html')
+        return render_template('addcontent.html',subject=subject)
+
+@app.route('/insert-content', methods=['POST'])
+def insert_content():
+    # Extract content from request
+    article_content = json.loads(request.form.get('article_content'))
+    
+    # Retrieve chapter and subtopic from session
+    subject = session['Subject']
+    chapter = session['Chapter']
+    subtopic1 = session['Subtopic']
+    chapd1 = session['ChapterDescription']
+    print("Voila", subject)
+    print("Voila2", chapter)
+    
+
+    serialized_content = json.dumps(article_content, ensure_ascii=False).encode('utf8')
+
+    article_content = json.loads(serialized_content)
+
+    # Extract text content from each item in the list
+    normal_text = ""
+    for _, item in article_content:  # Unpack each element to get the item
+        if item['type'] == 'text':
+            normal_text += item['content'] + '\n'  
+
+    # Insert content into subject table
+    with connection.cursor() as cursor:
+        sql = "INSERT INTO subject (Subject, Chapter,Subtopics ,TextualContent) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (subject, chapter, subtopic1 ,normal_text))
+        connection.commit()
+
+    return render_template("addcontent.html", inserted = True)
+   
 
 @app.route('/logout',methods=['GET','POST'])
 def logout():
@@ -800,16 +1058,16 @@ def register():
             role = 'Student'
 
         # Insert the new user into the database
-        conn = get_mysql_connection()
-        cursor = conn.cursor()
+        connection = get_mysql_connection()
+        cursor = connection.cursor()
         try:
             cursor.execute('INSERT INTO auth (name, email, password, role) VALUES (%s, %s, %s, %s)', (name, email, password, role))
-            conn.commit()
+            connection.commit()
             message = 'User registered successfully'
         except mysql.connector.Error as e:
             message = f'Error: {e}'
         finally:
-            conn.close()
+            connection.close()
 
         session['role'] = role
         session['id'] = id
@@ -822,51 +1080,75 @@ def register():
 def submit_reading_status():
     if request.method == 'POST':
         # Get student_id from session or wherever it's stored after authentication
-        id = session.get('id')  # Assuming it's stored in the session
-        print("Student ID from session:", id)  # Add this line for debugging
+        id = session.get('id')
+        name = session.get('name')
+        text_id = request.form.get('text_id')
+        video_id = request.form.get('video_id')
+        print("Text ID", text_id) 
+        print("Video ID", video_id) 
+        print("Name", name)
+        
+        # Check if student_id exists
         if not id:
             return 'Student ID not found. Please log in.'
         
-    text_id = session.get('text_id')  # Assuming text content ID is submitted
-    print("Content ID from form (text):", text_id)  # Add this line for debugging
-
-        # Initialize video_id to None
-    video_content_id = session.get('video_content_id')
-    print("Content ID from form (video):", video_content_id)
-        
-        # Check if student_id exists in the auth table
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id FROM auth WHERE id = %s", (id,))
-        student_exists = cursor.fetchone()
-        if not student_exists:
-            # If student_id doesn't exist, print a message and return
-            print(f"Student with ID {id} doesn't exist in the auth table.")
-            return 'Student ID not found in the auth table.'
-
-        # Check if content_id exists in the subject table
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT id FROM subject WHERE id = %s", (id,))
-            content_exists = cursor.fetchone()
-            if not content_exists:
-                # If content_id doesn't exist, print a message and return
-                print(f"Content with ID {id} doesn't exist in the subject table.")
-                return 'Content ID not found in the subject table.'
+        # Check if at least one of text_id or video_id exists
+        if not text_id and not video_id:
+            return 'No content ID provided.'
 
         # Update student_reading_status table
+        # with connection.cursor() as cursor:
+        #     if text_id:
+        #         # Update read_status and read_timestamp for textual content
+        #         cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+        #         cursor.execute("INSERT INTO status (student_id, student_name, text_id, read_status, read_timestamp) VALUES (%s, %s, %s, TRUE, %s) ON DUPLICATE KEY UPDATE read_status = TRUE, read_timestamp = %s", (id, name, text_id, datetime.datetime.now(), datetime.datetime.now()))
+        #     if video_id:
+        #         # Update watch_status and watch_timestamp for video content
+        #         cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+        #         cursor.execute("INSERT INTO status (student_id, student_name, video_id, watch_status, watch_timestamp) VALUES (%s, %s, %s, TRUE, %s) ON DUPLICATE KEY UPDATE watch_status = TRUE, watch_timestamp = %s", (id, name, video_id, datetime.datetime.now(), datetime.datetime.now()))
+        # connection.commit()
+        # return 'Reading status submitted successfully'
+        # Update student_reading_status table
         with connection.cursor() as cursor:
-            # Check if entry already exists for this student and content
-            cursor.execute("SELECT * FROM status WHERE student_id = %s AND text_id = %s AND video_id = %s AND read_status = FALSE", (id, text_id, video_content_id))
-            result = cursor.fetchone()
-            if result:
-                # If entry exists, update read_status and last_read_timestamp
-                cursor.execute("UPDATE status SET read_status = TRUE, timestamp = %s WHERE student_id = %s", (datetime.datetime.now(), id))
-            else:
-                # If entry doesn't exist, insert a new record
-                cursor.execute("INSERT INTO status (student_id, text_id, video_id, read_status, timestamp) VALUES (%s, %s, %s, TRUE, %s)", (id, text_id, video_content_id, datetime.datetime.now()))
+            if text_id:
+                # Check if a row exists for the given student and text_id
+                cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+                cursor.execute("SELECT COUNT(*) FROM status WHERE student_id = %s AND text_id = %s", (id, text_id))
+                row_count = cursor.fetchone()[0]
+                if row_count > 0:
+                    # Update read_status and read_timestamp for textual content
+                    cursor.execute("""
+                        UPDATE status 
+                        SET read_status = TRUE, read_timestamp = %s
+                        WHERE student_id = %s AND text_id = %s
+                    """, (datetime.datetime.now(), id, text_id))
+                else:
+                    # Insert a new row for textual content
+                    cursor.execute("""
+                        INSERT INTO status (student_id, student_name, text_id, read_status, read_timestamp) 
+                        VALUES (%s, %s, %s, TRUE, %s)
+                    """, (id, name, text_id, datetime.datetime.now()))
+            if video_id:
+                # Check if a row exists for the given student and video_id
+                cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
+                cursor.execute("SELECT COUNT(*) FROM status WHERE student_id = %s AND video_id = %s", (id, video_id))
+                row_count = cursor.fetchone()[0]
+                if row_count > 0:
+                    # Update watch_status and watch_timestamp for video content
+                    cursor.execute("""
+                        UPDATE status 
+                        SET watch_status = TRUE, watch_timestamp = %s
+                        WHERE student_id = %s AND video_id = %s
+                    """, (datetime.datetime.now(), id, video_id))
+                else:
+                    # Insert a new row for video content
+                    cursor.execute("""
+                        INSERT INTO status (student_id, student_name, video_id, watch_status, watch_timestamp) 
+                        VALUES (%s, %s, %s, TRUE, %s)
+                    """, (id, name, video_id, datetime.datetime.now()))
 
         connection.commit()
         return 'Reading status submitted successfully'
-        
 
 
 @app.route('/generate', methods=['POST'])
@@ -925,12 +1207,6 @@ def get_data_from_mysql(role):
         connection.close()
     return data1, data2, data3, data4
 
-@app.route('/getdatafrommysql')
-def getdatafrommysql():
-    role = session.get('role')
-    data1, data2, data3, data4 = get_data_from_mysql(role)
-    return render_template('progress_report.html', data1=data1, data2=data2, data3=data3, data4=data4, role=role ,user=get_user_info())
-
 def generate_with_cohere(keyword):
     for event in co.chat(f"Explain {keyword} in 1000 words to me and give output in HTML format", stream=True):
         if event.event_type == cohere.responses.chat.StreamEvent.TEXT_GENERATION:
@@ -939,6 +1215,31 @@ def generate_with_cohere(keyword):
 
         elif event.event_type == cohere.responses.chat.StreamEvent.STREAM_END:
             yield f""
+
+
+# PROGRESS
+@app.route('/subject_scores')
+def subject_scores():
+    # Connect to MySQL database
+    conn = get_mysql_connection()
+    cursor = conn.cursor()
+
+    # Fetch data from the score table
+    cursor.execute("SELECT Subject, AVG(SubjectScore) FROM score GROUP BY Subject")
+    data = cursor.fetchall()
+
+    # Close the connection
+    cursor.close()
+    conn.close()
+
+    # Prepare data for Chart.js
+    labels = [row[0] for row in data]
+    scores = [float(row[1]) for row in data]
+
+    return jsonify(labels=labels, scores=scores)
+
+
+
 
 
 if __name__ == '__main__':

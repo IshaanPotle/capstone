@@ -6,11 +6,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
-
     <style>
         a {display: inline-block;
             color: #13547a;
@@ -71,139 +69,128 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="subjects.html">{{ selected_subject }}</a></li>
-
                             <li class="breadcrumb-item active" aria-current="page">View Video</li>
                         </ol>
                     </nav>
-
                     <h2 class="text-white">Video Content</h2>
                 </div>
-
             </div>
         </div>
     </section>
-    <form action="/submit_reading_status" method="POST">
-        <input type="hidden" name="student_id" value="{{ session.id }}">
-        <input type="hidden" name="video_content_id" value="{{ video_content_id }}">
-        {% if role == 'Student' %}
-            <input type="submit" value="I have watched this video">
-        {% elif role == 'Teacher' %}
-            <button type="submit">Approve Video Content</button>
-        {% endif %}
-    </form>
 
+    {% if iframe_url %}
     <div class="iframe-container">
-        {% if iframe_url %}
-            <iframe id="video-frame" src="{{ iframe_url }}" frameborder="0" allowfullscreen></iframe>
-            <!-- Form for submitting reading status -->
-            
-            <p>No content found for this subject.</p>
-        {% endif %}
+        <iframe id="video-frame" src="{{ iframe_url }}" frameborder="0" allowfullscreen></iframe>
     </div>
-    
-    
-    
-<div>
-    <h3>Transcript</h3>
-    <div id="transcript">
-        {% for line in transcript %}
-            <p data-start="{{ line['start'] }}" data-end="{{ line['end'] }}">{{ line['text'] }}</p>
-        {% endfor %}
+    <!-- Form for submitting reading status -->
+    {% if role == 'Student' %}
+    <div class="container mt-3">
+        <form action="/submit_reading_status" method="POST">
+            <input type="hidden" name="student_id" value="{{ session.id }}">
+            <input type="hidden" name="video_id" value="{{ video_id }}">
+            <input type="submit" value="I have watched this video">
+        </form>
     </div>
-</div>
+    {% endif %}
+    {% endif %}
 
-<script>
-    const video = document.getElementById('video-frame');
-    const transcriptLines = document.querySelectorAll('#transcript p');
+     <!-- Displayed when there is no content -->
+     {% if not iframe_url %}
+     <div class="container mt-3">
+         <p>No content found for this subject.</p>
+     </div>
+     {% endif %}
 
-    video.addEventListener('timeupdate', () => {
-        const currentTime = video.currentTime;
-        transcriptLines.forEach(line => {
-            const startTime = parseFloat(line.getAttribute('data-start'));
-            const endTime = parseFloat(line.getAttribute('data-end'));
-            if (currentTime >= startTime && currentTime <= endTime) {
-                line.classList.add('current');
-                line.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                line.classList.remove('current');
-            }
-        });
-    });
-</script>
+   
 
-<footer class="site-footer section-padding">
-    <div class="container">
-        <div class="row">
+    <footer class="site-footer section-padding">
+        <div class="container">
+            <div class="row">
 
-            <div class="col-lg-3 col-12 mb-4 pb-2">
-                <a class="navbar-brand mb-2" href="/">
-                    <i class="bi-back"></i>
-                    <span>Topic</span>
-                </a>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-6">
-                <h6 class="site-footer-title mb-3">Resources</h6>
-
-                <ul class="site-footer-links">
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">Home</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">How it works</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">FAQs</a>
-                    </li>
-
-                    <li class="site-footer-link-item">
-                        <a href="#" class="site-footer-link">Contact</a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
-                <h6 class="site-footer-title mb-3">Information</h6>
-
-                <p class="text-white d-flex mb-1">
-                    <a href="tel: 305-240-9671" class="site-footer-link">
-                        305-240-9671
+                <div class="col-lg-3 col-12 mb-4 pb-2">
+                    <a class="navbar-brand mb-2" href="/">
+                        <i class="bi-back"></i>
+                        <span>Topic</span>
                     </a>
-                </p>
-
-                <p class="text-white d-flex">
-                    <a href="mailto:info@company.com" class="site-footer-link">
-                        info@company.com
-                    </a>
-                </p>
-            </div>
-
-            <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    English</button>
-
-                    <ul class="dropdown-menu">
-                        <li><button class="dropdown-item" type="button">Thai</button></li>
-
-                        <li><button class="dropdown-item" type="button">Myanmar</button></li>
-
-                        <li><button class="dropdown-item" type="button">Arabic</button></li>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6">
+                    <h6 class="site-footer-title mb-3">Resources</h6>
+    
+                    <ul class="site-footer-links">
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Home</a>
+                        </li>
+    
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">How it works</a>
+                        </li>
+    
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">FAQs</a>
+                        </li>
+    
+                        <li class="site-footer-link-item">
+                            <a href="#" class="site-footer-link">Contact</a>
+                        </li>
                     </ul>
                 </div>
+    
+                <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                    <h6 class="site-footer-title mb-3">Information</h6>
+    
+                    <p class="text-white d-flex mb-1">
+                        <a href="tel: 305-240-9671" class="site-footer-link">
+                            305-240-9671
+                        </a>
+                    </p>
+    
+                    <p class="text-white d-flex">
+                        <a href="mailto:info@company.com" class="site-footer-link">
+                            info@company.com
+                        </a>
+                    </p>
+                </div>
+    
+                <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        English</button>
+    
+                        <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button">Thai</button></li>
+    
+                            <li><button class="dropdown-item" type="button">Myanmar</button></li>
+    
+                            <li><button class="dropdown-item" type="button">Arabic</button></li>
+                        </ul>
+                    </div>
+    
+                    <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
+                        <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
 
-                <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
-                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
-
+                </div>
             </div>
-
         </div>
-    </div>
-</footer>
-
-<!-- JavaScript Bundle with Popper -->
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    </footer>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        const video = document.getElementById('video-frame');
+        const transcriptLines = document.querySelectorAll('#transcript p');
+    
+        video.addEventListener('timeupdate', () => {
+            const currentTime = video.currentTime;
+            transcriptLines.forEach(line => {
+                const startTime = parseFloat(line.getAttribute('data-start'));
+                const endTime = parseFloat(line.getAttribute('data-end'));
+                if (currentTime >= startTime && currentTime <= endTime) {
+                    line.classList.add('current');
+                    line.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    line.classList.remove('current');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
