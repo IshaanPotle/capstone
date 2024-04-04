@@ -19,7 +19,9 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/templatemo-topic-listing.css') }}">
 
         <style>
-            .card {           
+            .card {   
+                margin-left: 20%;
+                width: 60%;        
                 top: 10%; 
                 border-radius: 10px; /* Add rounded corners */
                 border: none; /* Remove border */
@@ -68,7 +70,7 @@
                 </div>
             </section>        
             
-            <center><h2>Subject Names</h2></center>
+            <center><h2 style="margin-top: 30px; padding: 30px">Subject Names</h2></center>
             <ul>                     
                 {% for subject in subjects %}
                     {% if user %}
@@ -159,6 +161,7 @@
 
 
 
+{% include 'footer.html'%}
 
         <!-- JAVASCRIPT FILES -->
         <script src="js/jquery.min.js"></script>

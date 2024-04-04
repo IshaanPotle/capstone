@@ -36,6 +36,9 @@
         </div>
     </section>
 
+    <div style="text-align: center;
+    width: 93%;
+    margin: 5rem;">
 
     <table style="width: 100%;">
         <tr>
@@ -79,6 +82,7 @@
             </td>
         </tr>
     </table>
+</div>
 
     <!-- Placeholder for the chart -->
    
@@ -183,7 +187,7 @@
                 labels: labels,
                 datasets: [{
                     label: 'Subject Level',
-                    data: filteredData,
+                    data: data,
                     backgroundColor: colors,
                     borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
@@ -209,12 +213,14 @@
     
     function updateTopics() {
         var subject = document.getElementById("subjectSelect").value;
+        console.log(subject)
         var topics = [];
         {% for item in topics_list %}
             if ("{{ item.Subject }}" === subject) {
                 topics.push("{{ item.Subtopics|join('')|replace("'", "\\'") }}"); // Join the topic names with a separator and replace quotes
             }
         {% endfor %}
+
         
         var topicSelect = document.getElementById("topicSelect");
         // Clear existing options

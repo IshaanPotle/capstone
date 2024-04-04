@@ -72,7 +72,7 @@ def inject_email():
 
 @app.context_processor
 def inject_user_info():
-    # Retrieve user's name and role from session
+    # Retrieve user name and role from session
     name = session.get('name')
     role = session.get('role')
 
@@ -242,6 +242,7 @@ def chapters():
 @app.route('/textualcontent', methods=['GET', 'POST'])
 def textualcontent():
     role = session.get('role')
+    role = session.get('name')
     print("Role is:", role)
 
     if request.method == 'POST':
@@ -272,7 +273,7 @@ def textualcontent():
 
             # If textual content is found, render the template with it
             if textual_content:
-                return render_template('textualcontent.html', textual_content=textual_content['TextualContent'], text_id=text_id, subtopic=subtopic, role=role)  # Pass 'subtopic' and 'text_id' to the template
+                return render_template('textualcontent.html', textual_content=textual_content['TextualContent'], text_id=text_id, subtopic=subtopic, name = name,role=role, user = get_user_info)  # Pass 'subtopic' and 'text_id' to the template
             else:
                 return "No textual content found for this subtopic: " + subtopic  # Return the subtopic for debugging
         else:
@@ -445,7 +446,7 @@ def topics_detail():
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    return render_template('contact.html', user=get_user_info())
 
 @app.route('/test')
 def test():
@@ -1013,7 +1014,8 @@ def insert_content():
         if item['type'] == 'text':
             normal_text += item['content'] + '\n'  
 
-    # Insert content into subject table
+    connection = get_mysql_connection()
+    # Insert content into subject table 
     with connection.cursor() as cursor:
         sql = "INSERT INTO subject (Subject, Chapter,Subtopics ,TextualContent) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, (subject, chapter, subtopic1 ,normal_text))

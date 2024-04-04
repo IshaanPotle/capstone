@@ -77,147 +77,160 @@
     </section>
 <br>
 <ul class="list-unstyled row">
-    <h5 style="margin-left: 75px;">
-    {% if selected_subject == 'Biology' %}
-        {% if subject_level == 1 %}
-            <li>Start with Chapter: Basic Biology & Subtopic 'Cells'</li>
-        {% elif subject_level == 2 %}
-            <li>Start with Chapter: Plant Physiology & Subtopic 'Respiration in plants'</li>
-        {% elif subject_level == 3 %}
-            <li>Start with Chapter: Quiz of SubTopic 'Cells' in Basic Biology</li>  
+    <h5 style="text-align: center;">
+        {% if selected_subject == 'Biology' %}
+            {% if subject_level == 1 %}
+                <li style="    font-size: 30px;
+                font-weight: bold;">Start with Chapter: Basic Biology</li>
+                <li style="    font-size: 20px;
+                font-weight: bold;">Subtopic 'Cells'</li>
+            {% elif subject_level == 2 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Plant Physiology</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Respiration in plants'</li>
+            {% elif subject_level == 3 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Quiz of SubTopic 'Cells' in Basic Biology</li>
+            {% endif %}
+        {% elif selected_subject == 'English' %}
+            {% if subject_level == 1 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter:  Grammar and Syntax</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Syntax'</li>
+            {% elif subject_level == 2 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Comprehension</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Comprehension and what it means'</li>
+            {% elif subject_level == 3 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Quiz of Subtopic 'Syntax' in Grammar and Syntax</li>
+            {% endif %}
+        {% elif selected_subject == 'Social Sciences' %}
+            {% if subject_level == 1 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Our Constitution</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Constitution and its Significance'</li>
+            {% elif subject_level == 2 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Elections</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Elections and their scopes'</li>
+            {% elif subject_level == 3 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Quiz of Subtopic 'Elections and their scopes' in Elections</li>
+            {% endif %}
+        {% elif selected_subject == 'Chemistry' %}
+            {% if subject_level == 1 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Basic Chemistry</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Atomic Structure'</li>
+            {% elif subject_level == 2 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Chemical Reactions</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Types of Chemical Reactions'</li>
+            {% elif subject_level == 3 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions</li>
+            {% endif %}
+        {% elif selected_subject == 'Physics' %}
+            {% if subject_level == 1 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Basic Physics</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Mechanics'</li>
+            {% elif subject_level == 2 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Electromagnetism</li>
+                <li style="
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;">Subtopic 'Electromagnetic Induction'</li>
+            {% elif subject_level == 3 %}
+            <li style="
+            padding: 10px;
+            font-size: 30px;
+            font-weight: bold;">Start with Chapter: Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism</li>
+            {% endif %}
         {% endif %}
-    {% elif selected_subject == 'English' %}
-        {% if subject_level == 1 %}
-            <li>Start with Chapter:  Grammar and Syntax & Subtopic 'Syntax'</li>
-        {% elif subject_level == 2 %}
-            <li>Start with Chapter: Comprehension & Subtopic 'Comprehension and what it means'</li>
-        {% elif subject_level == 3 %}
-            <li>Start with Chapter: Quiz of Subtopic 'Syntax' in Grammar and Syntax</li>
-        {% endif %}
-    {% elif selected_subject == 'Social Sciences' %}
-        {% if subject_level == 1 %}
-            <li>Start with Chapter: Our Constitution & Subtopic 'Constitution and its Significance'</li>
-        {% elif subject_level == 2 %}
-            <li>Start with Chapter: Elections & Subtopic 'Elections and their scopes'</li>
-        {% elif subject_level == 3 %}
-            <li>Start with Chapter: Quiz of Subtopic 'Elections and their scopes' in Elections</li>
-        {% endif %}
-    {% elif selected_subject == 'Chemistry' %}
-        {% if subject_level == 1 %}
-            <li>Start with Chapter: Basic Chemistry & Subtopic 'Atomic Structure'</li>
-        {% elif subject_level == 2 %}
-            <li>Start with Chapter: Chemical Reactions & Subtopic 'Types of Chemical Reactions'</li>
-        {% elif subject_level == 3 %}
-            <li>Start with Chapter: Quiz of Subtopic 'Types of Chemical Reactions' in Chemical Reactions</li>
-        {% endif %}
-    {% elif selected_subject == 'Physics' %}
-        {% if subject_level == 1 %}
-            <li>Start with Chapter: Basic Physics & Subtopic 'Mechanics'</li>
-        {% elif subject_level == 2 %}
-            <li>Start with Chapter: Electromagnetism & Subtopic 'Electromagnetic Induction'</li>
-        {% elif subject_level == 3 %}
-            <li>Start with Chapter: Quiz of Subtopic 'Electromagnetic Induction' in Electromagnetism</li>
-        {% endif %}
-    {% endif %}
-</h5>
+    </h5>
 </ul>
 
 
         
-    <div class="container">
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            {% set seen_chapters = [] %}
-            {% for chapter in chapters %}
-            {% if chapter.Chapter not in seen_chapters %}
-            {% set _ = seen_chapters.append(chapter.Chapter) %}
-            <div class="col">
-                <div class="card">
-                    <div class="card-body" style="height: 32rem; overflow: hidden;">
-                        <h5 class="card-title">{{ chapter.Chapter }}</h5>
-                        <p class="card-text" style="overflow: hidden; text-overflow: ellipsis;">{{ chapter.ChapterDescription }}</p>
-                        <form action="/subtopics" method="POST">
-                            <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
-                            <button type="submit" class="btn btn-primary" style="background-color: #80d0c7; border-color: #80d0c7;">View Subtopics</button>
-                        </form>
-                    </div>
-                </div> 
-            </div>
-            {% endif %}
-            {% endfor %}
-    </div>
-
-    </div>
-    
-    <footer class="site-footer section-padding">
-        <div class="container">
-            <div class="row">
-
-                <div class="col-lg-3 col-12 mb-4 pb-2">
-                    <a class="navbar-brand mb-2" href="/">
-                        <i class="bi-back"></i>
-                        <span>Topic</span>
-                    </a>
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% set seen_chapters = [] %}
+        {% for chapter in chapters %}
+        {% if chapter.Chapter not in seen_chapters %}
+        {% set _ = seen_chapters.append(chapter.Chapter) %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body" style="overflow: hidden;">
+                    <h5 class="card-title">{{ chapter.Chapter }}</h5>
+                    <p class="card-text" style="overflow: hidden; text-overflow: ellipsis;height: 240px;">{{ chapter.ChapterDescription }}</p>
+                    <form action="/subtopics" method="POST">
+                        <input type="hidden" name="subject" value="{{ chapter.Chapter }}">
+                        <button type="submit" class="btn btn-primary" style="background-color: #80d0c7; border-color: #80d0c7;">View Subtopics</button>
+                    </form>
                 </div>
-
-                <div class="col-lg-3 col-md-4 col-6">
-                    <h6 class="site-footer-title mb-3">Resources</h6>
-
-                    <ul class="site-footer-links">
-                        <li class="site-footer-link-item">
-                            <a href="#" class="site-footer-link">Home</a>
-                        </li>
-
-                        <li class="site-footer-link-item">
-                            <a href="#" class="site-footer-link">How it works</a>
-                        </li>
-
-                        <li class="site-footer-link-item">
-                            <a href="#" class="site-footer-link">FAQs</a>
-                        </li>
-
-                        <li class="site-footer-link-item">
-                            <a href="#" class="site-footer-link">Contact</a>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
-                    <h6 class="site-footer-title mb-3">Information</h6>
-
-                    <p class="text-white d-flex mb-1">
-                        <a href="tel: 305-240-9671" class="site-footer-link">
-                            305-240-9671
-                        </a>
-                    </p>
-
-                    <p class="text-white d-flex">
-                        <a href="mailto:info@company.com" class="site-footer-link">
-                            info@company.com
-                        </a>
-                    </p>
-                </div>
-
-                <div class="col-lg-3 col-md-4 col-12 mt-4 mt-lg-0 ms-auto">
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        English</button>
-
-                        <ul class="dropdown-menu">
-                            <li><button class="dropdown-item" type="button">Thai</button></li>
-
-                            <li><button class="dropdown-item" type="button">Myanmar</button></li>
-
-                            <li><button class="dropdown-item" type="button">Arabic</button></li>
-                        </ul>
-                    </div>
-
-                    <p class="copyright-text mt-lg-5 mt-4">Copyright © 2048 Topic Listing Center. All rights reserved.
-                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
-                    
-                </div>
-
             </div>
         </div>
-    </footer>
+        {% endif %}
+        {% endfor %}
+</div>
+
+    </div>
+
+
 </body>
+{% include 'footer.html'%}    
+
 </html>
